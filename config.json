@@ -1,0 +1,12 @@
+{
+    "properties": {
+        "configJson": {
+            "title": "JSON object with webhook config",
+            "description": "The config of the app in JSON format (leave it empty for now, it will be updated from Studio)",
+            "type": "string"
+        }
+    },
+    "required": [
+        "configJson"
+    ]
+}
