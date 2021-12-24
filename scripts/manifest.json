@@ -6,5 +6,28 @@
     "created_at": "2021-12-21",
     "updated_at": "2021-12-21",
     "enabled": true,
-    "scripts": []
+    "scripts": [
+        {
+            "name": "get-webhook-config",
+            "description": "Get the webhook app config.",
+            "type": "AdminScript",
+            "actions": [
+                "Get"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "getWebhookConfig"
+        },
+        {
+            "name": "save-webhook-config",
+            "description": "Save the webhook app config.",
+            "type": "AdminScript",
+            "actions": [
+                "Post"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "saveWebhookConfig"
+        }
+    ]
 }
