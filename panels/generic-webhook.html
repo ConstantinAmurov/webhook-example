@@ -1,0 +1,40 @@
+<style>
+    bb-generic-webhook-panel .content-header-divider {
+        border-bottom: 1px solid #d5dde8;
+        margin: 15px -15px;
+    }
+
+    bb-generic-webhook-panel textarea {
+        margin-bottom: 15px;
+        min-height: 500px;
+        min-width: 100%;
+        max-width: 100%;
+    }
+</style>
+
+<section class="content">
+    <h2>Generic webhook</h2>
+
+    <div class="content-header-divider"></div>
+
+    <div uib-alert ng-class="'alert-' + $ctrl.alert.type" ng-if="$ctrl.alert">{{$ctrl.alert.msg}}</div>
+
+    <div ng-if="$ctrl.initialised">
+        You can learn more about the available config values <a href="https://gitlab.com/BookingBug/generic-webhook"
+            target="_blank">here</a>.<br><br>
+
+        <div class="box">
+            <div class="box-body">
+                <textarea class="form-control" ng-model="$ctrl.configJson"
+                    ng-change="$ctrl.validateConfigField()"></textarea>
+
+                <div class="has-error" ng-if="!$ctrl.configFieldIsValid">
+                    <div class="help-block">Invalid JSON format.</div>
+                </div>
+
+                <button type="button" class="btn btn-primary" ng-click="$ctrl.saveConfig()"
+                    ng-disabled="!$ctrl.configFieldIsValid">Save</button>
+            </div>
+        </div>
+    </div>
+</section>

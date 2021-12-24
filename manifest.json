@@ -1,0 +1,19 @@
+{
+  "bbAppManifestVersion": "1.0",
+  "name": "Generic webhook",
+  "unique_name": "generic-webhook",
+  "version": "0.1",
+  "description": "A general purpose, configurable webhook.",
+  "author": "JRNI",
+  "licence": "GPL",
+  "tags": "",
+  "config": true,
+  "panels": [
+    "panels"
+  ],
+  "objects": [],
+  "script_packs": [
+    "scripts"
+  ],
+  "liquid": []
+}
