@@ -28,6 +28,39 @@
             "log_type": "None",
             "enabled": true,
             "handler": "saveWebhookConfig"
+        },
+        {
+            "name": "after-create-booking",
+            "description": "Triggered after a booking was created.",
+            "type": "Bookings",
+            "actions": [
+                "after_create"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "afterCreateBooking"
+        },
+        {
+            "name": "after-update-booking",
+            "description": "Triggered after a booking was updated.",
+            "type": "Bookings",
+            "actions": [
+                "after_update"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "afterUpdateBooking"
+        },
+        {
+            "name": "after-delete-booking",
+            "description": "Triggered after a booking was deleted.",
+            "type": "Bookings",
+            "actions": [
+                "after_delete"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "afterDeleteBooking"
         }
     ]
 }
