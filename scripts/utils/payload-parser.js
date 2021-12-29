@@ -40,7 +40,7 @@ const getGroupedLiquidItems = (payload) => {
     });
 
     if (liquidGroups.hasOwnProperty('noEntity')) {
-        const entities = Object.keys(liquidGroups); // [person,client,noEntity]
+        const entities = Object.keys(liquidGroups);
         if (entities.length === 1) {
             liquidGroups.booking = liquidGroups.noEntity;
         }
@@ -73,8 +73,7 @@ const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
         requests.push(company.$post('liquid_renderer', payload));
     }
 
-    let results = await Promise.all(requests);
-
+    const results = await Promise.all(requests);
     return results.reduce((resolvedLiquidItems, result) => ({ ...resolvedLiquidItems, ...JSON.parse(result.liquid_render) }), {});
 };
 

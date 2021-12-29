@@ -6,7 +6,7 @@ const getWebhookConfig = (data, callback) => {
         let configJson = getConfItem('configJson');
 
         if (!configJson)
-            configJson = '{}';
+            configJson = '[]';
 
         callback(null, { config: JSON.parse(configJson) });
     } catch (error) {
