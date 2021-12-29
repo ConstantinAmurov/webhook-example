@@ -61,6 +61,28 @@
             "log_type": "None",
             "enabled": true,
             "handler": "afterDeleteBooking"
+        },
+        {
+            "name": "get-trigger-status",
+            "description": "Get the status of a trigger.",
+            "type": "AdminScript",
+            "actions": [
+                "Post"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "getTriggerStatus"
+        },
+        {
+            "name": "mark-trigger",
+            "description": "Mark the trigger to know it was called.",
+            "type": "AdminScript",
+            "actions": [
+                "Put"
+            ],
+            "log_type": "None",
+            "enabled": true,
+            "handler": "markTrigger"
         }
     ]
 }
