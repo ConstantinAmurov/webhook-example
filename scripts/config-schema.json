@@ -24,14 +24,18 @@
                         },
                         "uniqueItems": true
                     },
-                    "staffGroupsIds": {
+                    "staffGroups": {
                         "type": "array",
                         "items": {
                             "type": "number"
                         },
                         "uniqueItems": true
                     }
-                }
+                },
+                "required": [
+                    "companies",
+                    "staffGroups"
+                ]
             },
             "url": {
                 "type": "string"
