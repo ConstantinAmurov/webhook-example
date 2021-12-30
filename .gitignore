@@ -1,2 +1,5 @@
 .bbugrc
 build
+node_modules
+package-lock.json
+scripts/dependencies.js
