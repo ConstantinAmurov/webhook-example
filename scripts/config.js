@@ -5,11 +5,7 @@ const configSchema = require('./config-schema');
 
 const getWebhookConfig = (data, callback) => {
     try {
-        let configJson = getConfItem('configJson');
-
-        if (!configJson)
-            configJson = '[]';
-
+        const configJson = getConfItem('configJson') || '[]';
         callback(null, { config: JSON.parse(configJson) });
     } catch (error) {
         log('error', '[getWebhookConfig] Error', error, true);

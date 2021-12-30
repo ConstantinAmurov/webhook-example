@@ -65,12 +65,15 @@ const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
     for (const [entity, liquidItemsGroup] of Object.entries(groupedLiquidItems)) {
         const entityId = getEntityId(entity, booking);
 
-        const payload = {
+        const params = {
             entity,
             id: entityId,
+        };
+        const data = {
+            version: 'V4',
             liquid_template: JSON.stringify(liquidItemsGroup)
         };
-        requests.push(company.$post('liquid_renderer', payload));
+        requests.push(company.$post('liquid_renderer', params, data));
     }
 
     const results = await Promise.all(requests);
