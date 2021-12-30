@@ -1,0 +1,28 @@
+{
+  "name": "generic-webhook",
+  "version": "1.0.0",
+  "description": "A general purpose, configurable webhook.",
+  "main": "entry.js",
+  "scripts": {
+    "build-modules": "npx webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/BookingBug/generic-webhook.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/BookingBug/generic-webhook/issues"
+  },
+  "homepage": "https://gitlab.com/BookingBug/generic-webhook#readme",
+  "devDependencies": {
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "jsonschema": "^1.4.0"
+  }
+}
