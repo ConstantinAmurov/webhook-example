@@ -1,5 +1,40 @@
 const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
+const { getConfItem } = require('./utils/config');
+const { getResolvedPayload } = require('./utils/payload-parser');
+
+const filterConfig = async (event, config, booking) => {
+    // 1st phase (no additional data required from JRNI)
+    config = config.filter(configItem => {
+        if (configItem.events.length > 0 && !configItem.events.includes(event))
+            return false;
+
+        if (configItem.triggerFor.companies.length > 0 && !configItem.triggerFor.companies.includes(booking.company_id))
+            return false;
+
+        return true;
+    });
+
+    // 2nd phase (additional data required from JRNI)
+    const liquidItemsForAdditionalFiltering = {};
+    config.forEach(configItem => {
+        if (configItem.triggerFor.staffGroups.length > 0)
+            liquidItemsForAdditionalFiltering.personGroupId = '{{person.group_id}}';
+    });
+
+    if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
+        return config;
+
+    const additionalFilters = JSON.parse(await getResolvedPayload(liquidItemsForAdditionalFiltering, booking));
+    config = config.filter(configItem => {
+        if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
+            return false;
+
+        return true;
+    });
+
+    return config;
+};
 
 const afterCreateBooking = (data, callback) => {
     log('info', '[afterCreateBooking] data', data);
@@ -25,8 +60,13 @@ const afterUpdateBooking = async (data, callback) => {
         return;
     }
 
-    log('info', '[afterUpdateBooking] Continue the execution', '', true);
-    log('info', '[afterUpdateBooking] booking', booking);
+    // Filter the config
+    const configJson = getConfItem('configJson') || '[]';
+    let config = JSON.parse(configJson);
+    config = await filterConfig('update', config, booking);
+
+    log('info', '[afterUpdateBooking] config', config);
+
     callback(null, {});
 };
 
