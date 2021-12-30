@@ -1,5 +1,7 @@
 const { getConfItem, setConfItem } = require('./utils/config');
 const log = require('./utils/logger');
+const { jsonSchemaValidate } = require('./dependencies');
+const configSchema = require('./config-schema');
 
 const getWebhookConfig = (data, callback) => {
     try {
@@ -24,7 +26,10 @@ const validateConfig = configJson => {
         throw new Error(`Invalid JSON format (${error.message})`);
     }
 
-    // WIP config validations
+    const { errors } = jsonSchemaValidate(config, configSchema);
+
+    if (errors.length > 0)
+        throw new Error(errors[0].stack);
 
     return config;
 };
