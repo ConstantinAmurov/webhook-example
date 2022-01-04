@@ -1,7 +1,9 @@
+const { axios } = require('./dependencies');
+
 const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
-const { getResolvedPayload } = require('./utils/payload-parser');
+const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
 
 const filterConfig = async (event, config, booking) => {
     // 1st phase (no additional data required from JRNI)
@@ -25,7 +27,7 @@ const filterConfig = async (event, config, booking) => {
     if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
         return config;
 
-    const additionalFilters = JSON.parse(await getResolvedPayload(liquidItemsForAdditionalFiltering, booking));
+    const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
     config = config.filter(configItem => {
         if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
             return false;
@@ -36,38 +38,65 @@ const filterConfig = async (event, config, booking) => {
     return config;
 };
 
+const sendData = async (config, booking) => {
+    let payloads = config.map(configItem => configItem.payload);
+    payloads = await getResolvedPayloads(payloads, booking);
+
+    const requests = config.map((configItem, configItemIndex) => {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        const data = payloads[configItemIndex];
+
+        return axios({
+            method: 'post',
+            url: configItem.url,
+            headers,
+            data
+        });
+    });
+
+    await Promise.all(requests);
+};
+
 const afterCreateBooking = (data, callback) => {
     log('info', '[afterCreateBooking] data', data);
     callback(null, {});
 };
 
 const afterUpdateBooking = async (data, callback) => {
-    // There is some weird caching issue sometimes so make sure we have the right data
-    const booking = await data.booking.$get('self', { no_cache: true });
+    try {
+        // There is some weird caching issue sometimes so make sure we have the right data
+        const booking = await data.booking.$get('self', { no_cache: true });
 
-    // Detect if it is duplicate trigger (the issue related to multiple triggers for a single update)
-    const duplicateCheckPayload = {
-        id: booking.id,
-        company_id: booking.company_id,
-        datetime: booking.datetime,
-        person_id: booking.person_id,
-        current_multi_status: booking.current_multi_status ? booking.current_multi_status : 'confirmed'
-    };
+        // Detect if it is duplicate trigger (the issue related to multiple triggers for a single update)
+        const duplicateCheckPayload = {
+            id: booking.id,
+            company_id: booking.company_id,
+            datetime: booking.datetime,
+            person_id: booking.person_id,
+            current_multi_status: booking.current_multi_status ? booking.current_multi_status : 'confirmed'
+        };
 
-    if (await isDuplicateTrigger(duplicateCheckPayload)) {
-        log('warn', '[afterUpdateBooking] DUPLICATE TRIGGER, execution aborted', '', true);
+        if (await isDuplicateTrigger(duplicateCheckPayload)) {
+            log('warn', '[afterUpdateBooking] DUPLICATE TRIGGER, execution aborted', '', true);
+            callback(null, {});
+            return;
+        }
+
+        // Filter the config
+        const configJson = getConfItem('configJson') || '[]';
+        let config = JSON.parse(configJson);
+        config = await filterConfig('update', config, booking);
+
+        await sendData(config, booking);
+
         callback(null, {});
-        return;
+    } catch (error) {
+        log('error', '[afterUpdateBooking] Error', error, true);
+        callback(new Error(`The afterUpdateBooking handler failed. Error: ${error.message}.`));
     }
-
-    // Filter the config
-    const configJson = getConfItem('configJson') || '[]';
-    let config = JSON.parse(configJson);
-    config = await filterConfig('update', config, booking);
-
-    log('info', '[afterUpdateBooking] config', config);
-
-    callback(null, {});
 };
 
 const afterDeleteBooking = (data, callback) => {

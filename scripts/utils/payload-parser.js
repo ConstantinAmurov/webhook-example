@@ -94,9 +94,34 @@ const getResolvedPayload = async (payload, booking) => {
         liquidItem = "{{" + liquidItem + "}}";
         payload = payload.split(liquidItem).join(jrniValue);
     }
+
+    payload = JSON.parse(payload);
     return payload;
 };
 
+const getResolvedPayloads = async (payloads, booking) => {
+    payloads = payloads.map(payload => JSON.stringify(payload));
+    let joinedPayloads = payloads.join('');
+
+    // Remove spaces next to tags
+    joinedPayloads = joinedPayloads.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
+    joinedPayloads = joinedPayloads.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
+
+    const groupedLiquidItems = getGroupedLiquidItems(joinedPayloads);
+    const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
+
+    for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
+        liquidItem = "{{" + liquidItem + "}}";
+        payloads.forEach((payload, index) => {
+            payloads[index] = payload.split(liquidItem).join(jrniValue)
+        });
+    }
+
+    payloads = payloads.map(payload => JSON.parse(payload));
+    return payloads;
+};
+
 module.exports = {
-    getResolvedPayload
+    getResolvedPayload,
+    getResolvedPayloads
 };
