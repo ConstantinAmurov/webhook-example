@@ -1,4 +1,4 @@
-const { updateAxiosOptionsForBasicUserPass } = require('./basic');
+const { updateAxiosOptionsForBasicUserPass, updateAxiosOptionsForBasicToken } = require('./basic');
 
 const updateAxiosOptionsForAuth = (axiosOptions, configAuth) => {
     switch (configAuth.method) {
@@ -7,7 +7,7 @@ const updateAxiosOptionsForAuth = (axiosOptions, configAuth) => {
             break;
 
         case 'basic_token':
-            // updateAxiosOptionsForBasicToken(axiosOptions, configAuth);
+            updateAxiosOptionsForBasicToken(axiosOptions, configAuth);
             break;
 
         case 'oauth2_client_credentials':

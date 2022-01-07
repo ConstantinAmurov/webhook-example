@@ -4,6 +4,11 @@ const updateAxiosOptionsForBasicUserPass = (axiosOptions, configAuth) => {
     axiosOptions.headers.Authorization = `Basic ${base64Credentials}`;
 };
 
+const updateAxiosOptionsForBasicToken = (axiosOptions, configAuth) => {
+    axiosOptions.headers.Authorization = `Basic ${configAuth.token}`;
+};
+
 module.exports = {
-    updateAxiosOptionsForBasicUserPass
+    updateAxiosOptionsForBasicUserPass,
+    updateAxiosOptionsForBasicToken
 };
