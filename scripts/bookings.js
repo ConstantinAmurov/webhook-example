@@ -40,30 +40,35 @@ const filterConfig = async (event, config, booking) => {
 };
 
 const sendData = async (config, booking) => {
-    let payloads = config.map(configItem => configItem.payload);
-    payloads = await getResolvedPayloads(payloads, booking);
+    try {
+        let payloads = config.map(configItem => configItem.payload);
+        payloads = await getResolvedPayloads(payloads, booking);
 
-    const requests = config.map((configItem, configItemIndex) => {
-        const axiosOptions = {
-            method: 'post',
-            url: configItem.url,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: payloads[configItemIndex]
-        };
+        const requests = config.map(async (configItem, configItemIndex) => {
+            const axiosOptions = {
+                method: 'post',
+                url: configItem.url,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: payloads[configItemIndex]
+            };
 
-        if (configItem.auth)
-            updateAxiosOptionsForAuth(axiosOptions, configItem.auth);
+            if (configItem.auth)
+                await updateAxiosOptionsForAuth(axiosOptions, configItem.auth);
 
-        return axios(axiosOptions);
-    });
+            return axios(axiosOptions);
+        });
 
-    await Promise.all(requests);
+        await Promise.all(requests);
+    } catch (error) {
+        error.source = error.source || 'booking.js -> sendData';
+        throw error;
+    }
 };
 
 const afterCreateBooking = (data, callback) => {
-    log('info', '[afterCreateBooking] data', data);
+    log('info', '[booking.js -> afterCreateBooking] data', data);
     callback(null, {});
 };
 
@@ -82,7 +87,7 @@ const afterUpdateBooking = async (data, callback) => {
         };
 
         if (await isDuplicateTrigger(duplicateCheckPayload)) {
-            log('warn', '[afterUpdateBooking] DUPLICATE TRIGGER, execution aborted', '', true);
+            log('warn', '[booking.js -> afterUpdateBooking] DUPLICATE TRIGGER, execution aborted', '', true);
             callback(null, {});
             return;
         }
@@ -96,13 +101,14 @@ const afterUpdateBooking = async (data, callback) => {
 
         callback(null, {});
     } catch (error) {
-        log('error', '[afterUpdateBooking] Error', error, true);
+        error.source = error.source || 'booking.js -> afterUpdateBooking';
+        log('error', `[${error.source}]`, error, true);
         callback(new Error(`The afterUpdateBooking handler failed. Error: ${error.message}.`));
     }
 };
 
 const afterDeleteBooking = (data, callback) => {
-    log('info', '[afterDeleteBooking] data', data);
+    log('info', '[booking.js -> afterDeleteBooking] data', data);
     callback(null, {});
 };
 
