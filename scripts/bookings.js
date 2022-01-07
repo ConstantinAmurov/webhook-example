@@ -4,6 +4,7 @@ const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
+const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 
 const filterConfig = async (event, config, booking) => {
     // 1st phase (no additional data required from JRNI)
@@ -43,18 +44,19 @@ const sendData = async (config, booking) => {
     payloads = await getResolvedPayloads(payloads, booking);
 
     const requests = config.map((configItem, configItemIndex) => {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-
-        const data = payloads[configItemIndex];
-
-        return axios({
+        const axiosOptions = {
             method: 'post',
             url: configItem.url,
-            headers,
-            data
-        });
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: payloads[configItemIndex]
+        };
+
+        if (configItem.auth)
+            updateAxiosOptionsForAuth(axiosOptions, configItem.auth);
+
+        return axios(axiosOptions);
     });
 
     await Promise.all(requests);
