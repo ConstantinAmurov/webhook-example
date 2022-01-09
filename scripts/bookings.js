@@ -7,36 +7,41 @@ const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-par
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 
 const filterConfig = async (event, config, booking) => {
-    // 1st phase (no additional data required from JRNI)
-    config = config.filter(configItem => {
-        if (configItem.events.length > 0 && !configItem.events.includes(event))
-            return false;
+    try {
+        // 1st phase (no additional data required from JRNI)
+        config = config.filter(configItem => {
+            if (configItem.events.length > 0 && !configItem.events.includes(event))
+                return false;
 
-        if (configItem.triggerFor.companies.length > 0 && !configItem.triggerFor.companies.includes(booking.company_id))
-            return false;
+            if (configItem.triggerFor.companies.length > 0 && !configItem.triggerFor.companies.includes(booking.company_id))
+                return false;
 
-        return true;
-    });
+            return true;
+        });
 
-    // 2nd phase (additional data required from JRNI)
-    const liquidItemsForAdditionalFiltering = {};
-    config.forEach(configItem => {
-        if (configItem.triggerFor.staffGroups.length > 0)
-            liquidItemsForAdditionalFiltering.personGroupId = '{{person.group_id}}';
-    });
+        // 2nd phase (additional data required from JRNI)
+        const liquidItemsForAdditionalFiltering = {};
+        config.forEach(configItem => {
+            if (configItem.triggerFor.staffGroups.length > 0)
+                liquidItemsForAdditionalFiltering.personGroupId = '{{person.group_id}}';
+        });
 
-    if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
+        if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
+            return config;
+
+        const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
+        config = config.filter(configItem => {
+            if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
+                return false;
+
+            return true;
+        });
+
         return config;
-
-    const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
-    config = config.filter(configItem => {
-        if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
-            return false;
-
-        return true;
-    });
-
-    return config;
+    } catch (error) {
+        error.source = error.source || 'booking.js -> filterConfig';
+        throw error;
+    }
 };
 
 const sendData = async (config, booking) => {

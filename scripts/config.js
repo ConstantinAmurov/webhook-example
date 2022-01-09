@@ -21,21 +21,25 @@ const validateConfig = configJson => {
     try {
         config = JSON.parse(configJson);
     } catch (error) {
-        throw new Error(`Invalid JSON format (${error.message})`);
+        const err = new Error(`Invalid JSON format (${error.message})`);
+        err.source = 'config.js -> validateConfig';
+        throw err;
     }
 
     const { errors } = jsonSchemaValidate(config, configSchema);
 
-    if (errors.length > 0)
-        throw new Error(errors[0].stack);
+    if (errors.length > 0) {
+        const err = new Error(errors[0].stack);
+        err.source = 'config.js -> validateConfig';
+        throw err;
+    }
 
     return config;
 };
 
 const saveWebhookConfig = (data, callback) => {
-    const { configJson } = data;
-
     try {
+        const { configJson } = data;
         const config = validateConfig(configJson);
         setConfItem('configJson', JSON.stringify(config));
         callback(null, { config });

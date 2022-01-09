@@ -59,66 +59,81 @@ const getEntityId = (entity, booking) => {
 };
 
 const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
-    const company = await bbCore.getCompany();
-    const requests = [];
+    try {
+        const company = await bbCore.getCompany();
+        const requests = [];
 
-    for (const [entity, liquidItemsGroup] of Object.entries(groupedLiquidItems)) {
-        const entityId = getEntityId(entity, booking);
+        for (const [entity, liquidItemsGroup] of Object.entries(groupedLiquidItems)) {
+            const entityId = getEntityId(entity, booking);
 
-        const params = {
-            entity,
-            id: entityId,
-        };
-        const data = {
-            version: 'V4',
-            liquid_template: JSON.stringify(liquidItemsGroup)
-        };
-        requests.push(company.$post('liquid_renderer', params, data));
+            const params = {
+                entity,
+                id: entityId,
+            };
+            const data = {
+                version: 'V4',
+                liquid_template: JSON.stringify(liquidItemsGroup)
+            };
+            requests.push(company.$post('liquid_renderer', params, data));
+        }
+
+        const results = await Promise.all(requests);
+        return results.reduce((resolvedLiquidItems, result) => ({ ...resolvedLiquidItems, ...JSON.parse(result.liquid_render) }), {});
+    } catch (error) {
+        error.source = error.source || 'payload-parser.js -> getResolvedLiquidItems';
+        throw error;
     }
-
-    const results = await Promise.all(requests);
-    return results.reduce((resolvedLiquidItems, result) => ({ ...resolvedLiquidItems, ...JSON.parse(result.liquid_render) }), {});
 };
 
 const getResolvedPayload = async (payload, booking) => {
-    payload = JSON.stringify(payload);
+    try {
+        payload = JSON.stringify(payload);
 
-    // Remove spaces next to tags
-    payload = payload.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
-    payload = payload.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
+        // Remove spaces next to tags
+        payload = payload.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
+        payload = payload.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
 
-    const groupedLiquidItems = getGroupedLiquidItems(payload);
-    const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
+        const groupedLiquidItems = getGroupedLiquidItems(payload);
+        const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
 
-    for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
-        liquidItem = "{{" + liquidItem + "}}";
-        payload = payload.split(liquidItem).join(jrniValue);
+        for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
+            liquidItem = "{{" + liquidItem + "}}";
+            payload = payload.split(liquidItem).join(jrniValue);
+        }
+
+        payload = JSON.parse(payload);
+        return payload;
+    } catch (error) {
+        error.source = error.source || 'payload-parser.js -> getResolvedPayload';
+        throw error;
     }
-
-    payload = JSON.parse(payload);
-    return payload;
 };
 
 const getResolvedPayloads = async (payloads, booking) => {
-    payloads = payloads.map(payload => JSON.stringify(payload));
-    let joinedPayloads = payloads.join('');
+    try {
+        payloads = payloads.map(payload => JSON.stringify(payload));
+        let joinedPayloads = payloads.join('');
 
-    // Remove spaces next to tags
-    joinedPayloads = joinedPayloads.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
-    joinedPayloads = joinedPayloads.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
+        // Remove spaces next to tags
+        joinedPayloads = joinedPayloads.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
+        joinedPayloads = joinedPayloads.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
 
-    const groupedLiquidItems = getGroupedLiquidItems(joinedPayloads);
-    const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
+        const groupedLiquidItems = getGroupedLiquidItems(joinedPayloads);
+        const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
 
-    for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
-        liquidItem = "{{" + liquidItem + "}}";
-        payloads.forEach((payload, index) => {
-            payloads[index] = payload.split(liquidItem).join(jrniValue)
-        });
+        for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
+            liquidItem = "{{" + liquidItem + "}}";
+            payloads.forEach((payload, index) => {
+                payloads[index] = payload.split(liquidItem).join(jrniValue)
+            });
+        }
+
+        payloads = payloads.map(payload => JSON.parse(payload));
+        return payloads;
+    } catch (error) {
+        error.source = error.source || 'payload-parser.js -> getResolvedPayloads';
+        throw error;
     }
-
-    payloads = payloads.map(payload => JSON.parse(payload));
-    return payloads;
 };
 
 module.exports = {
