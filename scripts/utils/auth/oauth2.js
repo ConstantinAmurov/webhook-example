@@ -1,5 +1,5 @@
 const { axios } = require('../../dependencies');
-const bbCore = require("../../sdk");
+const bbCore = require('../../sdk');
 
 const setConfigAuthDefaultValues = (configAuth) => {
     configAuth.clientAuthentication = configAuth.clientAuthentication || 'send_as_basic_auth_header';

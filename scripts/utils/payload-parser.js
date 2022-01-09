@@ -5,22 +5,22 @@ const getGroupedLiquidItems = (payload) => {
     const liquidItems = payload.match(liquidItemRegex);
 
     const existingEntities = [
-        "person",
-        "client",
-        "company",
-        // "address",
-        // "resource",
-        "service",
-        "slot",
-        // "total",
-        // "item",
-        // "app",
-        // "object",
-        // "attendance",
-        // "attendee",
-        // "extra_data",
-        // "message",
-        "event_chain",
+        'person',
+        'client',
+        'company',
+        // 'address',
+        // 'resource',
+        'service',
+        'slot',
+        // 'total',
+        // 'item',
+        // 'app',
+        // 'object',
+        // 'attendance',
+        // 'attendee',
+        // 'extra_data',
+        // 'message',
+        'event_chain',
         'user',
         // 'recipient',
         // 'category',
@@ -97,7 +97,7 @@ const getResolvedPayload = async (payload, booking) => {
         const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
 
         for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
-            liquidItem = "{{" + liquidItem + "}}";
+            liquidItem = '{{' + liquidItem + '}}';
             payload = payload.split(liquidItem).join(jrniValue);
         }
 
@@ -122,7 +122,7 @@ const getResolvedPayloads = async (payloads, booking) => {
         const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
 
         for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
-            liquidItem = "{{" + liquidItem + "}}";
+            liquidItem = '{{' + liquidItem + '}}';
             payloads.forEach((payload, index) => {
                 payloads[index] = payload.split(liquidItem).join(jrniValue)
             });
