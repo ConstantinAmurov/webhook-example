@@ -4,64 +4,76 @@ const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
+const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 
 const filterConfig = async (event, config, booking) => {
-    // 1st phase (no additional data required from JRNI)
-    config = config.filter(configItem => {
-        if (configItem.events.length > 0 && !configItem.events.includes(event))
-            return false;
+    try {
+        // 1st phase (no additional data required from JRNI)
+        config = config.filter(configItem => {
+            if (configItem.events.length > 0 && !configItem.events.includes(event))
+                return false;
 
-        if (configItem.triggerFor.companies.length > 0 && !configItem.triggerFor.companies.includes(booking.company_id))
-            return false;
+            if (configItem.triggerFor.companies.length > 0 && !configItem.triggerFor.companies.includes(booking.company_id))
+                return false;
 
-        return true;
-    });
+            return true;
+        });
 
-    // 2nd phase (additional data required from JRNI)
-    const liquidItemsForAdditionalFiltering = {};
-    config.forEach(configItem => {
-        if (configItem.triggerFor.staffGroups.length > 0)
-            liquidItemsForAdditionalFiltering.personGroupId = '{{person.group_id}}';
-    });
+        // 2nd phase (additional data required from JRNI)
+        const liquidItemsForAdditionalFiltering = {};
+        config.forEach(configItem => {
+            if (configItem.triggerFor.staffGroups.length > 0)
+                liquidItemsForAdditionalFiltering.personGroupId = '{{person.group_id}}';
+        });
 
-    if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
+        if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
+            return config;
+
+        const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
+        config = config.filter(configItem => {
+            if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
+                return false;
+
+            return true;
+        });
+
         return config;
-
-    const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
-    config = config.filter(configItem => {
-        if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
-            return false;
-
-        return true;
-    });
-
-    return config;
+    } catch (error) {
+        error.source = error.source || 'booking.js -> filterConfig';
+        throw error;
+    }
 };
 
 const sendData = async (config, booking) => {
-    let payloads = config.map(configItem => configItem.payload);
-    payloads = await getResolvedPayloads(payloads, booking);
+    try {
+        let payloads = config.map(configItem => configItem.payload);
+        payloads = await getResolvedPayloads(payloads, booking);
 
-    const requests = config.map((configItem, configItemIndex) => {
-        const headers = {
-            'Content-Type': 'application/json'
-        };
+        const requests = config.map(async (configItem, configItemIndex) => {
+            const axiosOptions = {
+                method: 'post',
+                url: configItem.url,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: payloads[configItemIndex]
+            };
 
-        const data = payloads[configItemIndex];
+            if (configItem.auth)
+                await updateAxiosOptionsForAuth(axiosOptions, configItem.auth);
 
-        return axios({
-            method: 'post',
-            url: configItem.url,
-            headers,
-            data
+            return axios(axiosOptions);
         });
-    });
 
-    await Promise.all(requests);
+        await Promise.all(requests);
+    } catch (error) {
+        error.source = error.source || 'booking.js -> sendData';
+        throw error;
+    }
 };
 
 const afterCreateBooking = (data, callback) => {
-    log('info', '[afterCreateBooking] data', data);
+    log('info', '[booking.js -> afterCreateBooking] data', data);
     callback(null, {});
 };
 
@@ -80,7 +92,7 @@ const afterUpdateBooking = async (data, callback) => {
         };
 
         if (await isDuplicateTrigger(duplicateCheckPayload)) {
-            log('warn', '[afterUpdateBooking] DUPLICATE TRIGGER, execution aborted', '', true);
+            log('warn', '[booking.js -> afterUpdateBooking] DUPLICATE TRIGGER, execution aborted', '', true);
             callback(null, {});
             return;
         }
@@ -94,13 +106,14 @@ const afterUpdateBooking = async (data, callback) => {
 
         callback(null, {});
     } catch (error) {
-        log('error', '[afterUpdateBooking] Error', error, true);
+        error.source = error.source || 'booking.js -> afterUpdateBooking';
+        log('error', `[${error.source}]`, error, true);
         callback(new Error(`The afterUpdateBooking handler failed. Error: ${error.message}.`));
     }
 };
 
 const afterDeleteBooking = (data, callback) => {
-    log('info', '[afterDeleteBooking] data', data);
+    log('info', '[booking.js -> afterDeleteBooking] data', data);
     callback(null, {});
 };
 

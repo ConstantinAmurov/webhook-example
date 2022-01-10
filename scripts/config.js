@@ -1,6 +1,7 @@
+const { jsonSchemaValidate } = require('./dependencies');
+
 const { getConfItem, setConfItem } = require('./utils/config');
 const log = require('./utils/logger');
-const { jsonSchemaValidate } = require('./dependencies');
 const configSchema = require('./config-schema');
 
 const getWebhookConfig = (data, callback) => {
@@ -8,7 +9,8 @@ const getWebhookConfig = (data, callback) => {
         const configJson = getConfItem('configJson') || '[]';
         callback(null, { config: JSON.parse(configJson) });
     } catch (error) {
-        log('error', '[getWebhookConfig] Error', error, true);
+        error.source = error.source || 'config.js -> getWebhookConfig';
+        log('error', `[${error.source}]`, error, true);
         callback(new Error(`Failed to retrieve app config. Error: ${error.message}.`));
     }
 };
@@ -19,26 +21,31 @@ const validateConfig = configJson => {
     try {
         config = JSON.parse(configJson);
     } catch (error) {
-        throw new Error(`Invalid JSON format (${error.message})`);
+        const err = new Error(`Invalid JSON format (${error.message})`);
+        err.source = 'config.js -> validateConfig';
+        throw err;
     }
 
     const { errors } = jsonSchemaValidate(config, configSchema);
 
-    if (errors.length > 0)
-        throw new Error(errors[0].stack);
+    if (errors.length > 0) {
+        const err = new Error(errors[0].stack);
+        err.source = 'config.js -> validateConfig';
+        throw err;
+    }
 
     return config;
 };
 
 const saveWebhookConfig = (data, callback) => {
-    const { configJson } = data;
-
     try {
+        const { configJson } = data;
         const config = validateConfig(configJson);
         setConfItem('configJson', JSON.stringify(config));
         callback(null, { config });
     } catch (error) {
-        log('error', '[saveWebhookConfig] Error', error, true);
+        error.source = error.source || 'config.js -> saveWebhookConfig';
+        log('error', `[${error.source}]`, error, true);
         callback(new Error(`Failed to save app config. Error: ${error.message}.`));
     }
 };

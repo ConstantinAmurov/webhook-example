@@ -11,13 +11,13 @@ const deleteBBCoreData = (data) => {
 const getTriggerStatus = (data, callback) => {
     data = deleteBBCoreData(data);
     const isDuplicate = !!bbCore.getTempValue(JSON.stringify(data));
-    callback(null, { status: "success", isDuplicate });
+    callback(null, { status: 'success', isDuplicate });
 }
 
 const markTrigger = (data, callback) => {
     data = deleteBBCoreData(data);
     bbCore.setTempValue(JSON.stringify(data), true, 10);
-    callback(null, { status: "success" });
+    callback(null, { status: 'success' });
 }
 
 const isDuplicateTrigger = async (payload) => {
