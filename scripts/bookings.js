@@ -3,6 +3,7 @@ const { axios } = require('./dependencies');
 const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
+const { setWebHookConfigDefaultValues } = require('./config');
 const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 
@@ -99,6 +100,8 @@ const afterUpdateBooking = async (data, callback) => {
 
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
+        setWebHookConfigDefaultValues(configJson);
+
         let config = JSON.parse(configJson);
         config = await filterConfig('update', config, booking);
 
