@@ -15,13 +15,6 @@ const getWebhookConfig = (data, callback) => {
     }
 };
 
-const setWebHookConfigDefaultValues = (configJson) => {
-    configJson.events = configAuth.events || [];
-    configJson.triggerFor = configJson.triggerFor || [];
-    configJson.triggerFor.companies = configJson.triggerFor.companies || [];
-    configJson.triggerFor.staffGroups = configJson.triggerFor.staffGroups || [];
-};
-
 const validateConfig = configJson => {
     let config;
 
@@ -57,7 +50,12 @@ const saveWebhookConfig = (data, callback) => {
     }
 };
 
-
+const setWebHookConfigDefaultValues = (configJson) => {
+    configJson.events = configJson.events || [];
+    configJson.triggerFor = configJson.triggerFor || {};
+    configJson.triggerFor.companies = configJson.triggerFor.companies || [];
+    configJson.triggerFor.staffGroups = configJson.triggerFor.staffGroups || [];
+};
 
 module.exports = {
     getWebhookConfig,

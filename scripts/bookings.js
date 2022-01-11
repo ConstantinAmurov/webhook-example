@@ -100,9 +100,8 @@ const afterUpdateBooking = async (data, callback) => {
 
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
-        setWebHookConfigDefaultValues(configJson);
-
         let config = JSON.parse(configJson);
+        setWebHookConfigDefaultValues(config);
         config = await filterConfig('update', config, booking);
 
         await sendData(config, booking);
