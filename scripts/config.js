@@ -50,7 +50,15 @@ const saveWebhookConfig = (data, callback) => {
     }
 };
 
+const setWebHookConfigDefaultValues = (config) => {
+    config.events = config.events || [];
+    config.triggerFor = config.triggerFor || {};
+    config.triggerFor.companies = config.triggerFor.companies || [];
+    config.triggerFor.staffGroups = config.triggerFor.staffGroups || [];
+};
+
 module.exports = {
     getWebhookConfig,
-    saveWebhookConfig
+    saveWebhookConfig,
+    setWebHookConfigDefaultValues
 };

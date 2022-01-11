@@ -44,12 +44,119 @@
                 "type": "object"
             },
             "auth": {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                    "method": {
+                        "type": "string",
+                        "enum": [
+                            "basic_user_pass",
+                            "basic_token",
+                            "oauth2_client_credentials"
+                        ]
+                    }
+                },
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": {
+                                "method": {
+                                    "const": "basic_user_pass"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "username",
+                                "password"
+                            ]
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "method": {
+                                    "const": "basic_token"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "token": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "token"
+                            ]
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "method": {
+                                    "const": "oauth2_client_credentials"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "tempVarUniqueName": {
+                                    "type": "string"
+                                },
+                                "accessTokenUrl": {
+                                    "type": "string"
+                                },
+                                "clientId": {
+                                    "type": "string"
+                                },
+                                "clientSecret": {
+                                    "type": "string"
+                                },
+                                "clientAuthentication": {
+                                    "type": "string",
+                                    "enum": [
+                                        "send_as_basic_auth_header",
+                                        "send_client_credentials_in_body"
+                                    ]
+                                },
+                                "responseProps": {
+                                    "type": "object",
+                                    "properties": {
+                                        "accessToken": {
+                                            "type": "string"
+                                        },
+                                        "expiresIn": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "headerPrefix": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "tempVarUniqueName",
+                                "accessTokenUrl",
+                                "clientId",
+                                "clientSecret"
+                            ]
+                        }
+                    }
+                ],
+                "required": [
+                    "method"
+                ]
             }
         },
         "required": [
-            "events",
-            "triggerFor",
             "url",
             "payload"
         ]
