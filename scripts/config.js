@@ -50,7 +50,7 @@ const saveWebhookConfig = (data, callback) => {
     }
 };
 
-const setWebHookConfigDefaultValues = (configJson) => {
+const setWebHookConfigDefaultValues = (config) => {
     config.events = config.events || [];
     config.triggerFor = config.triggerFor || {};
     config.triggerFor.companies = config.triggerFor.companies || [];
