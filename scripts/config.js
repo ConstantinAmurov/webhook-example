@@ -51,10 +51,12 @@ const saveWebhookConfig = (data, callback) => {
 };
 
 const setWebHookConfigDefaultValues = (config) => {
-    config.events = config.events || [];
-    config.triggerFor = config.triggerFor || {};
-    config.triggerFor.companies = config.triggerFor.companies || [];
-    config.triggerFor.staffGroups = config.triggerFor.staffGroups || [];
+    config.forEach((item) => {
+        item.events = config.events || [];
+        item.triggerFor = config.triggerFor || {};
+        item.triggerFor.companies = config.triggerFor.companies || [];
+        item.triggerFor.staffGroups = config.triggerFor.staffGroups || [];
+    });
 };
 
 module.exports = {
