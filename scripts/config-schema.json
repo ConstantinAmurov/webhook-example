@@ -31,11 +31,7 @@
                         },
                         "uniqueItems": true
                     }
-                },
-                "required": [
-                    "companies",
-                    "staffGroups"
-                ]
+                }
             },
             "url": {
                 "type": "string"
