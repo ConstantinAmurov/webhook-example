@@ -31,7 +31,8 @@
                         },
                         "uniqueItems": true
                     }
-                }
+                },
+                "additionalProperties": false
             },
             "url": {
                 "type": "string"
@@ -62,6 +63,9 @@
                         },
                         "then": {
                             "properties": {
+                                "method": {
+                                    "const": "basic_user_pass"
+                                },
                                 "username": {
                                     "type": "string"
                                 },
@@ -85,6 +89,9 @@
                         },
                         "then": {
                             "properties": {
+                                "method": {
+                                    "const": "basic_token"
+                                },
                                 "token": {
                                     "type": "string"
                                 }
@@ -104,6 +111,9 @@
                         },
                         "then": {
                             "properties": {
+                                "method": {
+                                    "const": "oauth2_client_credentials"
+                                },
                                 "tempVarUniqueName": {
                                     "type": "string"
                                 },
@@ -132,12 +142,14 @@
                                         "expiresIn": {
                                             "type": "string"
                                         }
-                                    }
+                                    },
+                                    "additionalProperties": false
                                 },
                                 "headerPrefix": {
                                     "type": "string"
                                 }
                             },
+                            "additionalProperties": false,
                             "required": [
                                 "tempVarUniqueName",
                                 "accessTokenUrl",
@@ -152,6 +164,7 @@
                 ]
             }
         },
+        "additionalProperties": false,
         "required": [
             "url",
             "payload"
