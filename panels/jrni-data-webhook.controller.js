@@ -79,4 +79,4 @@ const jrniDataWebhookPanel = {
 
 angular
     .module('BBAdminDashboard')
-    .component('bbJrniDatWebhookPanel', jrniDataWebhookPanel);
+    .component('bbJrniDataWebhookPanel', jrniDataWebhookPanel);
