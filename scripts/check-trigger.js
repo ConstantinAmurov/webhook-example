@@ -16,7 +16,7 @@ const getTriggerStatus = (data, callback) => {
 
 const markTrigger = (data, callback) => {
     data = deleteBBCoreData(data);
-    bbCore.setTempValue(JSON.stringify(data), true, 10);
+    bbCore.setTempValue(JSON.stringify(data), true, 20);
     callback(null, { status: 'success' });
 }
 
