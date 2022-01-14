@@ -1,6 +1,6 @@
 import Configurator from 'bookingbug-configurator-js';
 
-import template from './generic-webhook.html';
+import template from './jrni-data-webhook.html';
 
 Configurator.addPage('CustomPages', 'jrni-data-webhook', {
     style: 'tab',
