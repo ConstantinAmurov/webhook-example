@@ -1,3 +1,3 @@
-# Generic webhook
+# JRNI Data Webhook
 
 WIP
