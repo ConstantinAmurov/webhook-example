@@ -1,5 +1,5 @@
 {
-  "name": "generic-webhook",
+  "name": "jrni-data-webhook",
   "version": "1.0.0",
   "description": "A general purpose, configurable webhook.",
   "main": "entry.js",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/BookingBug/generic-webhook.git"
+    "url": "git+ssh://git@gitlab.com/BookingBug/jrni-data-webhook.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/BookingBug/generic-webhook/issues"
+    "url": "https://gitlab.com/BookingBug/jrni-data-webhook/issues"
   },
-  "homepage": "https://gitlab.com/BookingBug/generic-webhook#readme",
+  "homepage": "https://gitlab.com/BookingBug/jrni-data-webhook#readme",
   "devDependencies": {
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10"

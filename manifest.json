@@ -1,7 +1,7 @@
 {
   "bbAppManifestVersion": "1.0",
-  "name": "Generic webhook",
-  "unique_name": "generic-webhook",
+  "name": "JRNI Data Webhook",
+  "unique_name": "jrni-data-webhook",
   "version": "0.1",
   "description": "A general purpose, configurable webhook.",
   "author": "JRNI",

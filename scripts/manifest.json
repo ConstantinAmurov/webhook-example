@@ -1,7 +1,7 @@
 {
     "version": "0.1",
-    "name": "generic-webhook-scripts",
-    "description": "Necessary scripts for Generic webhook app.",
+    "name": "jrni-data-webhook-scripts",
+    "description": "Necessary scripts for JRNI Data Webhook app.",
     "platform": "nodejs12.x",
     "created_at": "2021-12-21",
     "updated_at": "2021-12-21",

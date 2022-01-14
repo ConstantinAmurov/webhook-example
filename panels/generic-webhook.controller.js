@@ -2,12 +2,12 @@ import Configurator from 'bookingbug-configurator-js';
 
 import template from './generic-webhook.html';
 
-Configurator.addPage('CustomPages', 'generic-webhook', {
+Configurator.addPage('CustomPages', 'jrni-data-webhook', {
     style: 'tab',
     layout: [
         [
             {
-                type: 'bb-generic-webhook-panel',
+                type: 'bb-jrni-data-webhook-panel',
                 width: 12,
                 index: 0,
                 panel_params: {
@@ -17,14 +17,14 @@ Configurator.addPage('CustomPages', 'generic-webhook', {
     ]
 });
 
-class GenericWebhookController {
+class JrniDataWebhookController {
     constructor(bbAuthorisation) {
         this.company = bbAuthorisation.getCompany();
         this.initialise();
     }
 
     async initialise() {
-        const app = await this.company.$get('apps', { app_name: 'generic-webhook' });
+        const app = await this.company.$get('apps', { app_name: 'jrni-data-webhook' });
         const { data } = await app.$get('admin_script', { name: 'get-webhook-config' });
 
         if (data.errorMessage)
@@ -49,7 +49,7 @@ class GenericWebhookController {
     }
 
     async saveConfig() {
-        const app = await this.company.$get('apps', { app_name: 'generic-webhook' });
+        const app = await this.company.$get('apps', { app_name: 'jrni-data-webhook' });
         const { data } = await app.$post('admin_script', { name: 'save-webhook-config' }, { configJson: this.configJson });
 
         if (data.errorMessage)
@@ -67,9 +67,9 @@ class GenericWebhookController {
     }
 }
 
-const genericWebhookPanel = {
+const jrniDataWebhookPanel = {
     templateUrl: template.id,
-    controller: GenericWebhookController,
+    controller: JrniDataWebhookController,
     controllerAs: '$ctrl',
     scope: true,
     bindings: {
@@ -79,4 +79,4 @@ const genericWebhookPanel = {
 
 angular
     .module('BBAdminDashboard')
-    .component('bbGenericWebhookPanel', genericWebhookPanel);
+    .component('bbJrniDatWebhookPanel', jrniDataWebhookPanel);
