@@ -6,6 +6,7 @@ const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
 const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
+const { getCompaniesChildrenIds } = require('./utils/jrni');
 
 const filterConfig = async (event, config, booking) => {
     try {
@@ -41,6 +42,23 @@ const filterConfig = async (event, config, booking) => {
         return config;
     } catch (error) {
         error.source = error.source || 'booking.js -> filterConfig';
+        throw error;
+    }
+};
+
+const updateTriggerForCompanies = async (config) => {
+    let companiesChildrenIds = [];
+
+    try {
+        const requests = config.map((configItem) => getCompaniesChildrenIds(configItem.triggerFor.parentCompanies));
+        companiesChildrenIds = await Promise.all(requests);
+        config.forEach((configItem, configIndex) => {
+            configItem.triggerFor.companies = [...configItem.triggerFor.companies, ...companiesChildrenIds[configIndex]];
+            configItem.triggerFor.companies = configItem.triggerFor.companies.filter((company) => !configItem.triggerFor.excludedCompanies.includes(company));
+        });
+    }
+    catch (error) {
+        error.source = error.source || 'booking.js -> updateTriggerForCompanies';
         throw error;
     }
 };
@@ -102,6 +120,7 @@ const afterUpdateBooking = async (data, callback) => {
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
         setWebHookConfigDefaultValues(config);
+        await updateTriggerForCompanies(config);
         config = await filterConfig('update', config, booking);
 
         await sendData(config, booking);
