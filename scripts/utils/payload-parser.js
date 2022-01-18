@@ -4,6 +4,8 @@ const getGroupedLiquidItems = (payload) => {
     const liquidItemRegex = /\{\{[^}]+\}\}/g; // {{person.name}}
     const liquidItems = payload.match(liquidItemRegex);
 
+    if (liquidItems === null) return {};
+
     const existingEntities = [
         'person',
         'client',
@@ -28,6 +30,7 @@ const getGroupedLiquidItems = (payload) => {
 
     const entityRegex = new RegExp(`(${existingEntities.join('|')})(?=\\.)`);
     const liquidGroups = {};
+
 
     liquidItems.forEach(liquidItem => {
         const entities = liquidItem.match(entityRegex);
@@ -124,7 +127,7 @@ const getResolvedPayloads = async (payloads, booking) => {
         for (let [liquidItem, jrniValue] of Object.entries(resolvedLiquidItems)) {
             liquidItem = '{{' + liquidItem + '}}';
             payloads.forEach((payload, index) => {
-                payloads[index] = payload.split(liquidItem).join(jrniValue)
+                payloads[index] = payload.split(liquidItem).join(jrniValue);
             });
         }
 
