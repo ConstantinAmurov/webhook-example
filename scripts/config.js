@@ -56,8 +56,8 @@ const setWebHookConfigDefaultValues = (config) => {
         item.triggerFor = item.triggerFor || {};
         item.triggerFor.companies = item.triggerFor.companies || [];
         item.triggerFor.staffGroups = item.triggerFor.staffGroups || [];
-        item.parentCompanies = item.parentCompanies || [];
-        item.excludedCompanies = item.excludedCompanies || [];
+        item.triggerFor.parentCompanies = item.triggerFor.parentCompanies || [];
+        item.triggerFor.excludedCompanies = item.triggerFor.excludedCompanies || [];
     });
 };
 
