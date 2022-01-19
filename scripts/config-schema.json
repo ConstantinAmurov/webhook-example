@@ -30,6 +30,20 @@
                             "type": "number"
                         },
                         "uniqueItems": true
+                    },
+                    "parentCompanies": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "uniqueItems": true
+                    },
+                    "excludedCompanies": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "uniqueItems": true
                     }
                 },
                 "additionalProperties": false
