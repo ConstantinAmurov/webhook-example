@@ -40,7 +40,4 @@ const getCompanyChildren = async (parentCompanyId) => {
     }
 };
 
-
-
-
 module.exports = { getCompaniesChildrenIds };
