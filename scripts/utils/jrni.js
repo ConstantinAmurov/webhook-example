@@ -21,7 +21,7 @@ const getCompanyChildren = async (parentCompanyId) => {
         const url = `${bbCore.context.apiUrl}/api/${bbCore.context.apiVersion}/admin/${parentCompanyId}/company`;
         const axiosOptions = {
             method: 'get',
-            url: url,
+            url,
             headers: {
                 'Accept': 'application/json',
                 'App-Id': bbCore.sessionStorage.app_id,

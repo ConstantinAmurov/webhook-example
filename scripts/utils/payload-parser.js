@@ -31,7 +31,6 @@ const getGroupedLiquidItems = (payload) => {
     const entityRegex = new RegExp(`(${existingEntities.join('|')})(?=\\.)`);
     const liquidGroups = {};
 
-
     liquidItems.forEach(liquidItem => {
         const entities = liquidItem.match(entityRegex);
         const entity = entities ? entities[0] : 'noEntity';

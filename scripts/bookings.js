@@ -47,11 +47,9 @@ const filterConfig = async (event, config, booking) => {
 };
 
 const updateTriggerForCompanies = async (config) => {
-    let companiesChildrenIds = [];
-
     try {
         const requests = config.map((configItem) => getCompaniesChildrenIds(configItem.triggerFor.parentCompanies));
-        companiesChildrenIds = await Promise.all(requests);
+        const companiesChildrenIds = await Promise.all(requests);
         config.forEach((configItem, configIndex) => {
             configItem.triggerFor.companies = [...configItem.triggerFor.companies, ...companiesChildrenIds[configIndex]];
             configItem.triggerFor.companies = configItem.triggerFor.companies.filter((company) => !configItem.triggerFor.excludedCompanies.includes(company));
