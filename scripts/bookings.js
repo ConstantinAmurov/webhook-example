@@ -98,7 +98,7 @@ const afterCreateBooking = async (data, callback) => {
         let config = JSON.parse(configJson);
         setWebHookConfigDefaultValues(config);
         await updateTriggerForCompanies(config);
-        config = await filterConfig('update', config, booking);
+        config = await filterConfig('create', config, booking);
 
         await sendData(config, booking);
 
@@ -158,7 +158,7 @@ const afterDeleteBooking = async (data, callback) => {
         let config = JSON.parse(configJson);
         setWebHookConfigDefaultValues(config);
         await updateTriggerForCompanies(config);
-        config = await filterConfig('update', config, booking);
+        config = await filterConfig('cancel', config, booking);
 
         await sendData(config, booking);
 
