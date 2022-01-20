@@ -148,9 +148,28 @@ const afterUpdateBooking = async (data, callback) => {
     }
 };
 
-const afterDeleteBooking = (data, callback) => {
-    log('info', '[booking.js -> afterDeleteBooking] data', data);
-    callback(null, {});
+const afterDeleteBooking = async (data, callback) => {
+
+    try {
+        const booking = await data.booking.$get('self', { no_cache: true });
+
+        // Filter the config
+        const configJson = getConfItem('configJson') || '[]';
+        let config = JSON.parse(configJson);
+        setWebHookConfigDefaultValues(config);
+        await updateTriggerForCompanies(config);
+        config = await filterConfig('update', config, booking);
+
+        await sendData(config, booking);
+
+        callback(null, {});
+    }
+    catch (error) {
+        error.source = error.source || 'booking.js -> afterDeleteBooking';
+        log('error', `[${error.source}]`, error, true);
+        callback(new Error(`The afterDeleteBooking handler failed. Error: ${error.message}.`));
+    }
+
 };
 
 module.exports = {
