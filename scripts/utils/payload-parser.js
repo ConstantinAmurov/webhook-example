@@ -113,12 +113,17 @@ const getResolvedPayload = async (payload, booking) => {
 
 const getResolvedPayloads = async (payloads, booking) => {
     try {
-        payloads = payloads.map(payload => JSON.stringify(payload));
-        let joinedPayloads = payloads.join('');
+        payloads = payloads.map(payload => {
+            let jsonPayload = JSON.stringify(payload);
 
-        // Remove spaces next to tags
-        joinedPayloads = joinedPayloads.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
-        joinedPayloads = joinedPayloads.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
+            // Remove spaces next to tags
+            jsonPayload = jsonPayload.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
+            jsonPayload = jsonPayload.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
+
+            return jsonPayload;
+        });
+
+        let joinedPayloads = payloads.join('');
 
         const groupedLiquidItems = getGroupedLiquidItems(joinedPayloads);
         const resolvedLiquidItems = await getResolvedLiquidItems(groupedLiquidItems, booking);
