@@ -89,9 +89,26 @@ const sendData = async (config, booking) => {
     }
 };
 
-const afterCreateBooking = (data, callback) => {
-    log('info', '[booking.js -> afterCreateBooking] data', data);
-    callback(null, {});
+const afterCreateBooking = async (data, callback) => {
+    try {
+        const booking = await data.booking.$get('self', { no_cache: true });
+
+        // Filter the config
+        const configJson = getConfItem('configJson') || '[]';
+        let config = JSON.parse(configJson);
+        setWebHookConfigDefaultValues(config);
+        await updateTriggerForCompanies(config);
+        config = await filterConfig('update', config, booking);
+
+        await sendData(config, booking);
+
+        callback(null, {});
+    }
+    catch (error) {
+        error.source = error.source || 'booking.js -> afterCreateBooking';
+        log('error', `[${error.source}]`, error, true);
+        callback(new Error(`The afterCreateBooking handler failed. Error: ${error.message}.`));
+    }
 };
 
 const afterUpdateBooking = async (data, callback) => {
