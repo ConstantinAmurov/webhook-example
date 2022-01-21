@@ -7,12 +7,13 @@ const getGroupedLiquidItems = (payload) => {
     if (liquidItems === null) return {};
 
     const existingEntities = [
-        'person',
-        'client',
+        'booking',
         'company',
         // 'address',
-        // 'resource',
+        'person',
+        'resource',
         'service',
+        'client',
         'slot',
         // 'total',
         // 'item',
@@ -57,7 +58,13 @@ const getGroupedLiquidItems = (payload) => {
 };
 
 const getEntityId = (entity, booking) => {
-    return booking[entity + '_id'];
+    switch (entity) {
+        case 'booking':
+            return booking.id;
+
+        default:
+            return booking[`${entity}_id`];
+    }
 };
 
 const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
