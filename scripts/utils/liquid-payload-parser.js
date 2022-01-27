@@ -89,7 +89,7 @@ const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
         const results = await Promise.all(requests);
         return results.reduce((resolvedLiquidItems, result) => ({ ...resolvedLiquidItems, ...JSON.parse(result.liquid_render) }), {});
     } catch (error) {
-        error.source = error.source || 'custom-payload-parser.js -> getResolvedLiquidItems';
+        error.source = error.source || 'liquid-payload-parser.js -> getResolvedLiquidItems';
         throw error;
     }
 };
@@ -113,7 +113,7 @@ const getLiquidResolvedPayload = async (payload, booking) => {
         payload = JSON.parse(payload);
         return payload;
     } catch (error) {
-        error.source = error.source || 'custom-payload-parser.js -> getLiquidResolvedPayload';
+        error.source = error.source || 'liquid-payload-parser.js -> getLiquidResolvedPayload';
         throw error;
     }
 };
@@ -145,7 +145,7 @@ const getLiquidResolvedPayloads = async (payloads, booking) => {
         payloads = payloads.map(payload => JSON.parse(payload));
         return payloads;
     } catch (error) {
-        error.source = error.source || 'custom-payload-parser.js -> getLiquidResolvedPayloads';
+        error.source = error.source || 'liquid-payload-parser.js -> getLiquidResolvedPayloads';
         throw error;
     }
 };

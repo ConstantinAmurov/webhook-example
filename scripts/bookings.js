@@ -4,9 +4,10 @@ const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
-const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/custom-payload-parser');
+const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/liquid-payload-parser');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds } = require('./utils/jrni');
+const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
 
 const filterConfig = async (event, config, booking) => {
     try {
@@ -65,6 +66,7 @@ const sendData = async (config, booking) => {
     try {
         let payloads = config.map(configItem => configItem.payload);
         payloads = await getLiquidResolvedPayloads(payloads, booking);
+        payloads = await getCustomResolvedPayloads(payloads, booking);
 
         const requests = config.map(async (configItem, configItemIndex) => {
             const axiosOptions = {
