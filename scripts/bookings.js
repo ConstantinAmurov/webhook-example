@@ -4,7 +4,7 @@ const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
-const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/payload-parser');
+const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/custom-payload-parser');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds } = require('./utils/jrni');
 
