@@ -94,7 +94,7 @@ const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
     }
 };
 
-const getResolvedPayload = async (payload, booking) => {
+const getLiquidResolvedPayload = async (payload, booking) => {
     try {
         payload = JSON.stringify(payload);
 
@@ -113,12 +113,12 @@ const getResolvedPayload = async (payload, booking) => {
         payload = JSON.parse(payload);
         return payload;
     } catch (error) {
-        error.source = error.source || 'payload-parser.js -> getResolvedPayload';
+        error.source = error.source || 'payload-parser.js -> getLiquidResolvedPayload';
         throw error;
     }
 };
 
-const getResolvedPayloads = async (payloads, booking) => {
+const getLiquidResolvedPayloads = async (payloads, booking) => {
     try {
         payloads = payloads.map(payload => {
             let jsonPayload = JSON.stringify(payload);
@@ -145,12 +145,12 @@ const getResolvedPayloads = async (payloads, booking) => {
         payloads = payloads.map(payload => JSON.parse(payload));
         return payloads;
     } catch (error) {
-        error.source = error.source || 'payload-parser.js -> getResolvedPayloads';
+        error.source = error.source || 'payload-parser.js -> getLiquidResolvedPayloads';
         throw error;
     }
 };
 
 module.exports = {
-    getResolvedPayload,
-    getResolvedPayloads
+    getLiquidResolvedPayload,
+    getLiquidResolvedPayloads
 };

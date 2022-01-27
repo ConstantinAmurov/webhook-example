@@ -4,7 +4,7 @@ const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
-const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
+const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/payload-parser');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds } = require('./utils/jrni');
 
@@ -31,7 +31,7 @@ const filterConfig = async (event, config, booking) => {
         if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
             return config;
 
-        const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
+        const additionalFilters = await getLiquidResolvedPayload(liquidItemsForAdditionalFiltering, booking);
         config = config.filter(configItem => {
             if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
                 return false;
@@ -64,7 +64,7 @@ const updateTriggerForCompanies = async (config) => {
 const sendData = async (config, booking) => {
     try {
         let payloads = config.map(configItem => configItem.payload);
-        payloads = await getResolvedPayloads(payloads, booking);
+        payloads = await getLiquidResolvedPayloads(payloads, booking);
 
         const requests = config.map(async (configItem, configItemIndex) => {
             const axiosOptions = {
