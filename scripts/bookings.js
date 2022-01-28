@@ -5,6 +5,7 @@ const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
 const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
+const { updateAxiosOptionsForMtls } = require('./utils/auth/mtls');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds } = require('./utils/jrni');
 
@@ -75,6 +76,9 @@ const sendData = async (config, booking) => {
                 },
                 data: payloads[configItemIndex]
             };
+
+            if (configItem.mtls)
+                await updateAxiosOptionsForMtls(axiosOptions, configItem.mtls);
 
             if (configItem.auth)
                 await updateAxiosOptionsForAuth(axiosOptions, configItem.auth);
