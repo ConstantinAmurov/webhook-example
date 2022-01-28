@@ -1,15 +1,25 @@
-const bbCore = require('../sdk');
-
 const getCustomResolvedPayloads = async (payloads, booking) => {
     try {
-        for (payload of payloads) {
-            const jsonPayload = JSON.stringify(payload);
-            const customItemRegex = /\[.*?\]]/g; // [[custom_item]]
-            const customItems = jsonPayload.match(customItemRegex);
-            if (customItems.length > 0) {
-                const customPayload = await requestCustomPayload(url, booking);
-                console.log('customPayload');
-                console.log(customPayload);
+        payloads = payloads.map(payload => {
+            let jsonPayload = JSON.stringify(payload);
+            jsonPayload = jsonPayload.replace(/(?<=\[\[)\s*/g, ''); // "    [[    custom_item   ]]    " -> "   [[custom_item  ]]   "
+            jsonPayload = jsonPayload.replace(/\s*(?=\]\])/g, '');  // "   [[custom_item   ]]   " -> "   [[custom_item]]   "
+            jsonPayload = jsonPayload.replace(/(?<=")\s+(?=\[\[)/g, ''); // "   [[custom_item]]   " -> "[[custom_item]]   " 
+            jsonPayload = jsonPayload.replace(/(?<=\]\])\s+(?=")/g, '');  // "[[custom_item   ]]   " -> "[[custom_item]]"
+            return jsonPayload;
+        });
+
+        let joinedPayloads = payloads.join('');
+        const customItemRegex = /\[\[[^\]]+\]\]/g; // [[custom_item]]
+        const hasCustomItems = customItemRegex.test(joinedPayloads);
+
+        if (hasCustomItems) {
+            const customPayload = await requestCustomPayload(booking);
+            for (let [customItem, jrniValue] of Object.entries(customPayload)) {
+                customItem = `"[[${customItem}]]"`;
+                payloads.forEach((payload, index) => {
+                    payloads[index] = payload.split(customItem).join(JSON.stringify(jrniValue));
+                });
             }
         }
 
@@ -20,14 +30,14 @@ const getCustomResolvedPayloads = async (payloads, booking) => {
         error.source = error.source || 'custom-payload-parser.js -> getCustomResolvedPayloads';
         throw error;
     }
-
 };
 
-const requestCustomPayload = (url, booking) => {
+const requestCustomPayload = async (booking) => {
     try {
-        const app = await bbCore.getApp();
-        const { data } = await app.$post('admin_script', { name: 'generate-payload' }, booking);
+        const company = await booking.$getCompany();
+        const app = await company.$get('apps', { app_name: 'extension' });
 
+        const { data } = await app.$post('admin_script', { name: 'generate-payload' }, booking);
         return data;
     }
     catch (error) {
