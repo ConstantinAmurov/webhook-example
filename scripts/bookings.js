@@ -102,7 +102,7 @@ const afterCreateBooking = async (data, callback) => {
         await updateTriggerForCompanies(config);
         config = await filterConfig('create', config, booking);
 
-        await sendData(config, booking);
+        await sendData(config, data.booking);
 
         callback(null, {});
     }
@@ -140,7 +140,7 @@ const afterUpdateBooking = async (data, callback) => {
         await updateTriggerForCompanies(config);
         config = await filterConfig('update', config, booking);
 
-        await sendData(config, booking);
+        await sendData(config, data.booking);
 
         callback(null, {});
     } catch (error) {
@@ -162,7 +162,7 @@ const afterDeleteBooking = async (data, callback) => {
         await updateTriggerForCompanies(config);
         config = await filterConfig('cancel', config, booking);
 
-        await sendData(config, booking);
+        await sendData(config, data.booking);
 
         callback(null, {});
     }
