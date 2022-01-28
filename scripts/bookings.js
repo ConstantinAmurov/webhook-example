@@ -94,6 +94,7 @@ const sendData = async (config, booking) => {
 const afterCreateBooking = async (data, callback) => {
     try {
         const booking = await data.booking.$get('self', { no_cache: true });
+        booking.$getCompany = data.booking.$getCompany;
 
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
@@ -102,7 +103,7 @@ const afterCreateBooking = async (data, callback) => {
         await updateTriggerForCompanies(config);
         config = await filterConfig('create', config, booking);
 
-        await sendData(config, data.booking);
+        await sendData(config, booking);
 
         callback(null, {});
     }
@@ -117,6 +118,7 @@ const afterUpdateBooking = async (data, callback) => {
     try {
         // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
+        booking.$getCompany = data.booking.$getCompany;
 
         // Detect if it is duplicate trigger (the issue related to multiple triggers for a single update)
         const duplicateCheckPayload = {
@@ -140,7 +142,7 @@ const afterUpdateBooking = async (data, callback) => {
         await updateTriggerForCompanies(config);
         config = await filterConfig('update', config, booking);
 
-        await sendData(config, data.booking);
+        await sendData(config, booking);
 
         callback(null, {});
     } catch (error) {
@@ -154,6 +156,7 @@ const afterDeleteBooking = async (data, callback) => {
 
     try {
         const booking = await data.booking.$get('self', { no_cache: true });
+        booking.$getCompany = data.booking.$getCompany;
 
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
@@ -162,7 +165,7 @@ const afterDeleteBooking = async (data, callback) => {
         await updateTriggerForCompanies(config);
         config = await filterConfig('cancel', config, booking);
 
-        await sendData(config, data.booking);
+        await sendData(config, booking);
 
         callback(null, {});
     }
