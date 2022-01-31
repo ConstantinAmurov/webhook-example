@@ -37,8 +37,8 @@ const getCustomResolvedPayloads = async (payloads, booking) => {
 const requestCustomPayload = async (booking) => {
     try {
         const company = await bbCore.getCompany();
-        const app = await company.$get('apps', { app_name: 'extension' });
-        
+        const app = await company.$get('apps', { app_name: 'jrni-data-webhook-extension' });
+
         const { data } = await app.$post('admin_script', { name: 'generate-payload' }, booking);
         return data;
     }
