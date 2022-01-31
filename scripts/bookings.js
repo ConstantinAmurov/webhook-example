@@ -4,7 +4,8 @@ const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
-const { getResolvedPayload, getResolvedPayloads } = require('./utils/payload-parser');
+const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/liquid-payload-parser');
+const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
 const { updateAxiosOptionsForMtls } = require('./utils/auth/mtls');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds } = require('./utils/jrni');
@@ -32,7 +33,7 @@ const filterConfig = async (event, config, booking) => {
         if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
             return config;
 
-        const additionalFilters = await getResolvedPayload(liquidItemsForAdditionalFiltering, booking);
+        const additionalFilters = await getLiquidResolvedPayload(liquidItemsForAdditionalFiltering, booking);
         config = config.filter(configItem => {
             if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
                 return false;
@@ -65,7 +66,8 @@ const updateTriggerForCompanies = async (config) => {
 const sendData = async (config, booking) => {
     try {
         let payloads = config.map(configItem => configItem.payload);
-        payloads = await getResolvedPayloads(payloads, booking);
+        payloads = await getLiquidResolvedPayloads(payloads, booking);
+        payloads = await getCustomResolvedPayloads(payloads, booking);
 
         const requests = config.map(async (configItem, configItemIndex) => {
             const axiosOptions = {
@@ -95,6 +97,7 @@ const sendData = async (config, booking) => {
 
 const afterCreateBooking = async (data, callback) => {
     try {
+        // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
 
         // Filter the config
@@ -153,8 +156,8 @@ const afterUpdateBooking = async (data, callback) => {
 };
 
 const afterDeleteBooking = async (data, callback) => {
-
     try {
+        // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
 
         // Filter the config
@@ -173,7 +176,6 @@ const afterDeleteBooking = async (data, callback) => {
         log('error', `[${error.source}]`, error, true);
         callback(new Error(`The afterDeleteBooking handler failed. Error: ${error.message}.`));
     }
-
 };
 
 module.exports = {

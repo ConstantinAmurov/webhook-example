@@ -89,12 +89,12 @@ const getResolvedLiquidItems = async (groupedLiquidItems, booking) => {
         const results = await Promise.all(requests);
         return results.reduce((resolvedLiquidItems, result) => ({ ...resolvedLiquidItems, ...JSON.parse(result.liquid_render) }), {});
     } catch (error) {
-        error.source = error.source || 'payload-parser.js -> getResolvedLiquidItems';
+        error.source = error.source || 'liquid-payload-parser.js -> getResolvedLiquidItems';
         throw error;
     }
 };
 
-const getResolvedPayload = async (payload, booking) => {
+const getLiquidResolvedPayload = async (payload, booking) => {
     try {
         payload = JSON.stringify(payload);
 
@@ -113,12 +113,12 @@ const getResolvedPayload = async (payload, booking) => {
         payload = JSON.parse(payload);
         return payload;
     } catch (error) {
-        error.source = error.source || 'payload-parser.js -> getResolvedPayload';
+        error.source = error.source || 'liquid-payload-parser.js -> getLiquidResolvedPayload';
         throw error;
     }
 };
 
-const getResolvedPayloads = async (payloads, booking) => {
+const getLiquidResolvedPayloads = async (payloads, booking) => {
     try {
         payloads = payloads.map(payload => {
             let jsonPayload = JSON.stringify(payload);
@@ -145,12 +145,12 @@ const getResolvedPayloads = async (payloads, booking) => {
         payloads = payloads.map(payload => JSON.parse(payload));
         return payloads;
     } catch (error) {
-        error.source = error.source || 'payload-parser.js -> getResolvedPayloads';
+        error.source = error.source || 'liquid-payload-parser.js -> getLiquidResolvedPayloads';
         throw error;
     }
 };
 
 module.exports = {
-    getResolvedPayload,
-    getResolvedPayloads
+    getLiquidResolvedPayload,
+    getLiquidResolvedPayloads
 };
