@@ -4,10 +4,10 @@ const getCustomResolvedPayloads = async (payloads, booking) => {
     try {
         payloads = payloads.map(payload => {
             let jsonPayload = JSON.stringify(payload);
-            jsonPayload = jsonPayload.replace(/(?<=\[\[)\s*/g, ''); // "    [[    custom_item   ]]    " -> "   [[custom_item  ]]   "
+            jsonPayload = jsonPayload.replace(/(?<=\[\[)\s*/g, ''); // "   [[   custom_item   ]]   " -> "   [[custom_item   ]]   "
             jsonPayload = jsonPayload.replace(/\s*(?=\]\])/g, '');  // "   [[custom_item   ]]   " -> "   [[custom_item]]   "
-            jsonPayload = jsonPayload.replace(/(?<=")\s+(?=\[\[)/g, ''); // "   [[custom_item]]   " -> "[[custom_item]]   " 
-            jsonPayload = jsonPayload.replace(/(?<=\]\])\s+(?=")/g, '');  // "[[custom_item   ]]   " -> "[[custom_item]]"
+            jsonPayload = jsonPayload.replace(/(?<=")\s+(?=\[\[)/g, ''); // "   [[custom_item]]   " -> "[[custom_item]]   "
+            jsonPayload = jsonPayload.replace(/(?<=\]\])\s+(?=")/g, '');  // "[[custom_item]]   " -> "[[custom_item]]"
             return jsonPayload;
         });
 
