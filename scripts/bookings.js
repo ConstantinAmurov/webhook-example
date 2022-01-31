@@ -5,9 +5,10 @@ const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
 const { setWebHookConfigDefaultValues } = require('./config');
 const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/liquid-payload-parser');
+const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
+const { updateAxiosOptionsForMtls } = require('./utils/auth/mtls');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds } = require('./utils/jrni');
-const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
 
 const filterConfig = async (event, config, booking) => {
     try {
@@ -77,6 +78,9 @@ const sendData = async (config, booking) => {
                 },
                 data: payloads[configItemIndex]
             };
+
+            if (configItem.mtls)
+                await updateAxiosOptionsForMtls(axiosOptions, configItem.mtls);
 
             if (configItem.auth)
                 await updateAxiosOptionsForAuth(axiosOptions, configItem.auth);

@@ -1,7 +1,7 @@
 const bbCore = require('../sdk');
 
 const getGroupedLiquidItems = (payload) => {
-    const liquidItemRegex = /\{\{[^}]+\}\}/g; // {{person.name}}
+    const liquidItemRegex = /\{\{[^{}]+\}\}/g; // {{person.name}}
     const liquidItems = payload.match(liquidItemRegex);
 
     if (liquidItems === null) return {};

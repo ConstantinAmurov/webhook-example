@@ -54,6 +54,26 @@
             "payload": {
                 "type": "object"
             },
+            "mtls": {
+                "type": "object",
+                "properties": {
+                    "keyPath": {
+                        "type": "string"
+                    },
+                    "certPath": {
+                        "type": "string"
+                    },
+                    "caPath": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "keyPath",
+                    "certPath",
+                    "caPath"
+                ],
+                "additionalProperties": false
+            },
             "auth": {
                 "type": "object",
                 "properties": {
