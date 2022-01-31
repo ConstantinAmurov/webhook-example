@@ -94,8 +94,6 @@ const sendData = async (config, booking) => {
 const afterCreateBooking = async (data, callback) => {
     try {
         const booking = await data.booking.$get('self', { no_cache: true });
-        booking.$getCompany = data.booking.$getCompany;
-
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
@@ -118,8 +116,6 @@ const afterUpdateBooking = async (data, callback) => {
     try {
         // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
-        booking.$getCompany = data.booking.$getCompany;
-
         // Detect if it is duplicate trigger (the issue related to multiple triggers for a single update)
         const duplicateCheckPayload = {
             id: booking.id,
@@ -156,8 +152,6 @@ const afterDeleteBooking = async (data, callback) => {
 
     try {
         const booking = await data.booking.$get('self', { no_cache: true });
-        booking.$getCompany = data.booking.$getCompany;
-
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);

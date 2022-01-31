@@ -1,3 +1,5 @@
+const bbCore = require('../sdk');
+
 const getCustomResolvedPayloads = async (payloads, booking) => {
     try {
         payloads = payloads.map(payload => {
@@ -34,9 +36,9 @@ const getCustomResolvedPayloads = async (payloads, booking) => {
 
 const requestCustomPayload = async (booking) => {
     try {
-        const company = await booking.$getCompany();
+        const company = await bbCore.getCompany();
         const app = await company.$get('apps', { app_name: 'extension' });
-
+        
         const { data } = await app.$post('admin_script', { name: 'generate-payload' }, booking);
         return data;
     }
