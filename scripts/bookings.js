@@ -93,7 +93,9 @@ const sendData = async (config, booking) => {
 
 const afterCreateBooking = async (data, callback) => {
     try {
+        // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
+
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
@@ -116,6 +118,7 @@ const afterUpdateBooking = async (data, callback) => {
     try {
         // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
+
         // Detect if it is duplicate trigger (the issue related to multiple triggers for a single update)
         const duplicateCheckPayload = {
             id: booking.id,
@@ -149,9 +152,10 @@ const afterUpdateBooking = async (data, callback) => {
 };
 
 const afterDeleteBooking = async (data, callback) => {
-
     try {
+        // There is some weird caching issue sometimes so make sure we have the right data
         const booking = await data.booking.$get('self', { no_cache: true });
+
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
@@ -168,7 +172,6 @@ const afterDeleteBooking = async (data, callback) => {
         log('error', `[${error.source}]`, error, true);
         callback(new Error(`The afterDeleteBooking handler failed. Error: ${error.message}.`));
     }
-
 };
 
 module.exports = {

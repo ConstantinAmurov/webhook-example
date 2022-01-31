@@ -40,7 +40,11 @@ const requestCustomPayload = async (booking) => {
         const app = await company.$get('apps', { app_name: 'jrni-data-webhook-extension' });
 
         const { data } = await app.$post('admin_script', { name: 'generate-payload' }, booking);
-        return data;
+
+        if (data.errorMessage)
+            throw new Error(data.errorMessage);
+
+        return data.payload;
     }
     catch (error) {
         error.source = error.source || 'custom-payload-parser.js -> requestCustomPayload';
