@@ -7,7 +7,9 @@ const getCompaniesChildrenIds = async (parentCompanyIds) => {
         let childrenCompanies = await Promise.all(requests);
         childrenCompanies = childrenCompanies.flat();
 
-        let childrenCompaniesIds = childrenCompanies.map((company) => company.id);
+        let childrenCompaniesIds = [];
+        populateChildrenCompaniesIds(childrenCompaniesIds, childrenCompanies);
+
         return childrenCompaniesIds;
     }
     catch (error) {
@@ -15,6 +17,13 @@ const getCompaniesChildrenIds = async (parentCompanyIds) => {
         throw error;
     }
 };
+
+const populateChildrenCompaniesIds = (childrenCompaniesIds, childrenCompanies) =>
+    childrenCompanies.forEach((company) => {
+        childrenCompaniesIds.push(company.id);
+        if (company.children_count > 0)
+            populateChildrenCompaniesIds(childrenCompaniesIds, company['companies']);
+    });
 
 const getCompanyChildren = async (parentCompanyId) => {
     try {
