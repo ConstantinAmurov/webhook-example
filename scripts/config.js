@@ -21,7 +21,7 @@ const parseReceivedConfig = (config) => {
     config.forEach((item) => {
         ['companies', 'staffGroups', 'parentCompanies', 'excludedCompanies'].forEach(key => {
             if (typeof item.triggerFor[key] === 'string')
-                item.triggerFor[key] = item.triggerFor[key].replace(/\s/g, '').split(',').map(numberAsString => parseInt(numberAsString));
+                item.triggerFor[key] = item.triggerFor[key].replace(/\s/g, '').split(',').map(value => parseInt(value));
         });
     });
 };
