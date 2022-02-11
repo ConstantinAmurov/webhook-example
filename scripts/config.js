@@ -17,19 +17,7 @@ const getWebhookConfig = (data, callback) => {
     }
 };
 
-const validateConfig = configJson => {
-    let config;
-
-    try {
-        config = JSON.parse(configJson);
-    } catch (error) {
-        const err = new Error(`Invalid JSON format (${error.message})`);
-        err.source = 'config.js -> validateConfig';
-        throw err;
-    }
-
-    parseReceivedConfig(config);
-
+const validateConfig = config => {
     const { errors } = jsonSchemaValidate(config, configSchema);
 
     if (errors.length > 0) {
@@ -37,14 +25,13 @@ const validateConfig = configJson => {
         err.source = 'config.js -> validateConfig';
         throw err;
     }
-
-    return config;
 };
 
 const saveWebhookConfig = (data, callback) => {
     try {
-        const { configJson } = data;
-        const config = validateConfig(configJson);
+        const { config } = data;
+        parseReceivedConfig(config);
+        validateConfig(config);
         setConfItem('configJson', JSON.stringify(config));
         parseConfigBeforeSending(config);
         callback(null, { config });

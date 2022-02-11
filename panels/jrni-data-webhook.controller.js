@@ -59,7 +59,7 @@ class JrniDataWebhookController {
 
         if (form.$valid) {
             const app = await this.company.$get('apps', { app_name: 'jrni-data-webhook' });
-            const { data } = await app.$post('admin_script', { name: 'save-webhook-config' }, { configJson: JSON.stringify(this.model.configItems) });
+            const { data } = await app.$post('admin_script', { name: 'save-webhook-config' }, { config: this.model.configItems });
 
             if (data.errorMessage)
                 this.alert = {
