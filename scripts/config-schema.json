@@ -52,7 +52,7 @@
                 "type": "string"
             },
             "payload": {
-                "type": "object"
+                "type": "string"
             },
             "mtls": {
                 "type": "object",

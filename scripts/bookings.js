@@ -3,7 +3,6 @@ const { axios } = require('./dependencies');
 const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
-const { setWebHookConfigDefaultValues } = require('./config');
 const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/liquid-payload-parser');
 const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
 const { updateAxiosOptionsForMtls } = require('./utils/auth/mtls');
@@ -103,7 +102,6 @@ const afterCreateBooking = async (data, callback) => {
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
-        setWebHookConfigDefaultValues(config);
         await updateTriggerForCompanies(config);
         config = await filterConfig('create', config, booking);
 
@@ -141,7 +139,6 @@ const afterUpdateBooking = async (data, callback) => {
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
-        setWebHookConfigDefaultValues(config);
         await updateTriggerForCompanies(config);
         config = await filterConfig('update', config, booking);
 
@@ -163,7 +160,6 @@ const afterDeleteBooking = async (data, callback) => {
         // Filter the config
         const configJson = getConfItem('configJson') || '[]';
         let config = JSON.parse(configJson);
-        setWebHookConfigDefaultValues(config);
         await updateTriggerForCompanies(config);
         config = await filterConfig('cancel', config, booking);
 

@@ -7,7 +7,9 @@ const configSchema = require('./config-schema');
 const getWebhookConfig = (data, callback) => {
     try {
         const configJson = getConfItem('configJson') || '[]';
-        callback(null, { config: JSON.parse(configJson) });
+        const config = JSON.parse(configJson);
+        parseConfigBeforeSending(config);
+        callback(null, { config });
     } catch (error) {
         error.source = error.source || 'config.js -> getWebhookConfig';
         log('error', `[${error.source}]`, error, true);
@@ -26,6 +28,8 @@ const validateConfig = configJson => {
         throw err;
     }
 
+    parseReceivedConfig(config);
+
     const { errors } = jsonSchemaValidate(config, configSchema);
 
     if (errors.length > 0) {
@@ -42,12 +46,33 @@ const saveWebhookConfig = (data, callback) => {
         const { configJson } = data;
         const config = validateConfig(configJson);
         setConfItem('configJson', JSON.stringify(config));
+        parseConfigBeforeSending(config);
         callback(null, { config });
     } catch (error) {
         error.source = error.source || 'config.js -> saveWebhookConfig';
         log('error', `[${error.source}]`, error, true);
         callback(new Error(`Failed to save app config. Error: ${error.message}.`));
     }
+};
+
+const parseReceivedConfig = (config) => {
+    setWebHookConfigDefaultValues(config);
+
+    config.forEach((item) => {
+        ['companies', 'staffGroups', 'parentCompanies', 'excludedCompanies'].forEach(key => {
+            if (typeof item.triggerFor[key] === 'string')
+                item.triggerFor[key] = item.triggerFor[key].replace(/\s/g, '').split(',').map(numberAsString => parseInt(numberAsString));
+        });
+    });
+};
+
+const parseConfigBeforeSending = (config) => {
+    config.forEach((item) => {
+        ['companies', 'staffGroups', 'parentCompanies', 'excludedCompanies'].forEach(key => {
+            if (typeof item.triggerFor[key] !== 'string')
+                item.triggerFor[key] = item.triggerFor[key].join(',');
+        });
+    });
 };
 
 const setWebHookConfigDefaultValues = (config) => {
@@ -63,6 +88,5 @@ const setWebHookConfigDefaultValues = (config) => {
 
 module.exports = {
     getWebhookConfig,
-    saveWebhookConfig,
-    setWebHookConfigDefaultValues
+    saveWebhookConfig
 };

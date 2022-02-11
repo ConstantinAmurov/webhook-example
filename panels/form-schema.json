@@ -1,0 +1,183 @@
+[
+  {
+    "key": "configItems",
+    "type": "tabarray",
+    "tabType": "top",
+    "title": "{{ 'Item ' + $index }}",
+    "add": "Add a new config item",
+    "items": [
+      {
+        "type": "fieldset",
+        "title": "Trigger for",
+        "items": [
+          {
+            "key": "configItems[].events",
+            "type": "checkboxes",
+            "title": "Events",
+            "titleMap": [
+              {
+                "value": "create",
+                "name": "after create booking"
+              },
+              {
+                "value": "update",
+                "name": "after update booking"
+              },
+              {
+                "value": "cancel",
+                "name": "after cancel booking"
+              }
+            ]
+          },
+          {
+            "key": "configItems[].triggerFor.companies",
+            "type": "text",
+            "title": "Companies",
+            "description": "Comma-separated list of IDs."
+          },
+          {
+            "key": "configItems[].triggerFor.staffGroups",
+            "type": "text",
+            "title": "Staff groups",
+            "description": "Comma-separated list of IDs."
+          },
+          {
+            "key": "configItems[].triggerFor.parentCompanies",
+            "type": "text",
+            "title": "Parent companies",
+            "description": "Comma-separated list of IDs."
+          },
+          {
+            "key": "configItems[].triggerFor.excludedCompanies",
+            "type": "text",
+            "title": "Excluded companies",
+            "description": "Comma-separated list of IDs."
+          }
+        ]
+      },
+      {
+        "type": "fieldset",
+        "title": "Data",
+        "items": [
+          {
+            "key": "configItems[].url",
+            "type": "text",
+            "title": "URL"
+          },
+          {
+            "key": "configItems[].payload",
+            "type": "textarea",
+            "title": "Liquid payload",
+            "description": "More details <a href='https://bookingbug.atlassian.net/wiki/spaces/CS/pages/364740627/Configuring+Liquid+Objects+in+JRNI'>here</a>."
+          }
+        ]
+      },
+      {
+        "type": "fieldset",
+        "title": "mTLS",
+        "items": [
+          {
+            "key": "configItems[].mtls.keyPath",
+            "type": "text",
+            "title": "key path"
+          },
+          {
+            "key": "configItems[].mtls.certPath",
+            "type": "text",
+            "title": "cert path"
+          },
+          {
+            "key": "configItems[].mtls.caPath",
+            "type": "text",
+            "title": "ca path",
+            "description": "The paths are relative to <code>scripts/certs</code> folder."
+          }
+        ]
+      },
+      {
+        "type": "fieldset",
+        "title": "Auth",
+        "items": [
+          {
+            "key": "configItems[].auth.method",
+            "type": "select",
+            "title": "Method",
+            "titleMap": {
+              "basic_user_pass": "basic_user_pass",
+              "basic_token": "basic_token",
+              "oauth2_client_credentials": "oauth2_client_credentials"
+            }
+          },
+          {
+            "key": "configItems[].auth.username",
+            "condition": "model.configItems[arrayIndex].auth.method == 'basic_user_pass'",
+            "type": "text",
+            "title": "username"
+          },
+          {
+            "key": "configItems[].auth.password",
+            "condition": "model.configItems[arrayIndex].auth.method == 'basic_user_pass'",
+            "type": "text",
+            "title": "password"
+          },
+          {
+            "key": "configItems[].auth.token",
+            "condition": "model.configItems[arrayIndex].auth.method == 'basic_token'",
+            "type": "text",
+            "title": "token"
+          },
+          {
+            "key": "configItems[].auth.tempVarUniqueName",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "tempVarUniqueName"
+          },
+          {
+            "key": "configItems[].auth.accessTokenUrl",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "accessTokenUrl"
+          },
+          {
+            "key": "configItems[].auth.clientId",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "clientId"
+          },
+          {
+            "key": "configItems[].auth.clientSecret",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "clientSecret"
+          },
+          {
+            "key": "configItems[].auth.clientAuthentication",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "select",
+            "title": "clientAuthentication",
+            "titleMap": {
+              "send_as_basic_auth_header": "send_as_basic_auth_header",
+              "send_client_credentials_in_body": "send_client_credentials_in_body"
+            }
+          },
+          {
+            "key": "configItems[].auth.responseProps.accessToken",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "responseProps.accessToken"
+          },
+          {
+            "key": "configItems[].auth.responseProps.expiresIn",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "responseProps.expiresIn"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "submit",
+    "title": "Save"
+  }
+]
