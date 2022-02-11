@@ -67,6 +67,7 @@ class JrniDataWebhookController {
                     msg: data.errorMessage
                 };
             else {
+                this.model = { configItems: data.config };
                 this.alert = {
                     type: 'success',
                     msg: 'The config has been updated.'
