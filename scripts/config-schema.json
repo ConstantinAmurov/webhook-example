@@ -52,7 +52,7 @@
                 "type": "string"
             },
             "payload": {
-                "type": "object"
+                "type": "string"
             },
             "mtls": {
                 "type": "object",
@@ -183,7 +183,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "tempVarUniqueName",
                                 "accessTokenUrl",
