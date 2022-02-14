@@ -1,6 +1,8 @@
 import Configurator from 'bookingbug-configurator-js';
 
 import template from './jrni-data-webhook.html';
+import modelSchema from './model-schema.json';
+import formSchema from './form-schema.json';
 
 Configurator.addPage('CustomPages', 'jrni-data-webhook', {
     style: 'tab',
@@ -18,8 +20,13 @@ Configurator.addPage('CustomPages', 'jrni-data-webhook', {
 });
 
 class JrniDataWebhookController {
-    constructor(bbAuthorisation) {
+    constructor(bbAuthorisation, $scope) {
         this.company = bbAuthorisation.getCompany();
+        this.$scope = $scope;
+
+        this.schema = modelSchema;
+        this.form = formSchema;
+
         this.initialise();
     }
 
@@ -33,36 +40,39 @@ class JrniDataWebhookController {
                 msg: data.errorMessage
             };
         else {
-            this.configJson = JSON.stringify(data.config, null, 4);
-            this.configFieldIsValid = true;
+            this.model = { configItems: data.config };
+
+            // It seems there is a bug in angular-schema-form and the first tab content is not displayed... this is the fix (a nasty fix)
+            setTimeout(() => {
+                const firstTabElements = document.getElementsByClassName('tab-pane index0');
+                const firstTabElement = firstTabElements.length > 0 ? firstTabElements[0] : null;
+                if (firstTabElement && !firstTabElement.classList.contains('active'))
+                    firstTabElement.classList.add('active');
+            }, 1000);
+
             this.initialised = true;
         }
     }
 
-    validateConfigField() {
-        try {
-            JSON.parse(this.configJson);
-            this.configFieldIsValid = true;
-        } catch (error) {
-            this.configFieldIsValid = false;
-        }
-    }
+    async saveConfig(form) {
+        this.$scope.$broadcast('schemaFormValidate');
 
-    async saveConfig() {
-        const app = await this.company.$get('apps', { app_name: 'jrni-data-webhook' });
-        const { data } = await app.$post('admin_script', { name: 'save-webhook-config' }, { configJson: this.configJson });
+        if (form.$valid) {
+            const app = await this.company.$get('apps', { app_name: 'jrni-data-webhook' });
+            const { data } = await app.$post('admin_script', { name: 'save-webhook-config' }, { config: this.model.configItems });
 
-        if (data.errorMessage)
-            this.alert = {
-                type: 'danger',
-                msg: data.errorMessage
-            };
-        else {
-            this.configJson = JSON.stringify(data.config, null, 4);
-            this.alert = {
-                type: 'success',
-                msg: 'The config has been updated.'
-            };
+            if (data.errorMessage)
+                this.alert = {
+                    type: 'danger',
+                    msg: data.errorMessage
+                };
+            else {
+                this.model = { configItems: data.config };
+                this.alert = {
+                    type: 'success',
+                    msg: 'The config has been updated.'
+                };
+            }
         }
     }
 }
@@ -78,5 +88,5 @@ const jrniDataWebhookPanel = {
 };
 
 angular
-    .module('BBAdminDashboard')
+    .module('BBAdminDashboard', ['schemaForm'])
     .component('bbJrniDataWebhookPanel', jrniDataWebhookPanel);
