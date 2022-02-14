@@ -25,12 +25,12 @@ const filterConfig = async (event, config, booking) => {
 
         // 2nd phase (additional data required from JRNI)
         const requireAdditionalFilters = config.some((configItem) => configItem.triggerFor.hasOwnProperty('staffGroups'));
-        if (requireAdditionalFilters === false)
+        if (!requireAdditionalFilters)
             return config;
 
         const staffGroupId = await getStaffGroupId(booking.company_id, booking.person_id);
 
-        config = config.filter(configItem => configItem.triggerFor.staffGroups.length > 0 && configItem.triggerFor.staffGroups.includes(staffGroupId));
+        config = config.filter(configItem => configItem.triggerFor.staffGroups.length === 0 || configItem.triggerFor.staffGroups.includes(staffGroupId));
 
         return config;
     } catch (error) {
@@ -56,9 +56,9 @@ const updateTriggerForCompanies = async (config) => {
 
 const sendData = async (config, booking) => {
     try {
-        let payloads = config.map(configItem => configItem.payload);
-        const tempPayload = ['{% assign total = booking.total %}  {% assign items = total.items %} {% comment %} does not include cancelled bookings {% endcomment %} {% assign printableItems = total.printable_items %} {% comment %} includes cancelled bookings {% endcomment %} {% assign printableItem = total.printable_items[0] %} {% assign space = printableItem.all_spaces.first %} {% assign slot = space.slot %} {% assign resource = slot.resource %} {%- assign companyName = slot.company.name -%} {%- assign memberName = slot.member.name -%} {%- assign addressMulti = slot.address.multiline_print -%}  {%- assign dateTime = space.date_time | date: " % A % e % B % Y % H:% M" -%} {%- assign refNum = space.id -%} {%- assign service = slot.service -%}  { "serviceName": "{{service.name}}" , "guid": "[[guid]]" }'];
-        payloads = await getLiquidResolvedPayloads(tempPayload, booking);
+        const liquidPayloads = config.map(configItem => configItem.payload);
+        const tempPayload = ['{% assign total = booking.total %}  {% assign items = total.items %} {% comment %} does not include cancelled bookings {% endcomment %} {% assign printableItems = total.printable_items %} {% comment %} includes cancelled bookings {% endcomment %} {% assign printableItem = total.printable_items[0] %} {% assign space = printableItem.all_spaces.first %} {% assign slot = space.slot %} {% assign resource = slot.resource %} {%- assign companyName = slot.company.name -%} {%- assign memberName = slot.member.name -%} {%- assign addressMulti = slot.address.multiline_print -%}  {%- assign dateTime = space.date_time | date: " % A % e % B % Y % H:% M" -%} {%- assign refNum = space.id -%} {%- assign service = slot.service -%}  { "serviceName": "{{booking.service_name}}" , "guid": "[[guid]]" }'];
+        let payloads = await getLiquidResolvedPayloads(tempPayload, booking);
         payloads = await getCustomResolvedPayloads(payloads, booking);
 
         const requests = config.map(async (configItem, configItemIndex) => {

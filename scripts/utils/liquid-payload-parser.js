@@ -1,18 +1,18 @@
 const bbCore = require('../sdk');
 
-const getResolvedLiquidItems = async (payloads, booking) => {
+const getLiquidResolvedPayloads = async (liquidPayloads, booking) => {
     try {
         const company = await bbCore.getCompany();
         const requests = [];
 
-        payloads.forEach((payload) => {
+        liquidPayloads.forEach((liquidPayload) => {
             const params = {
                 entity: 'booking',
                 id: booking.id,
             };
             const data = {
                 version: 'V4',
-                liquid_template: payload
+                liquid_template: liquidPayload
             };
             requests.push(company.$post('liquid_renderer', params, data));
         });
@@ -22,24 +22,6 @@ const getResolvedLiquidItems = async (payloads, booking) => {
         results = results.map((result) => JSON.parse(result.liquid_render));
 
         return results;
-    } catch (error) {
-        error.source = error.source || 'liquid-payload-parser.js -> getResolvedLiquidItems';
-        throw error;
-    }
-};
-
-const getLiquidResolvedPayloads = async (payloads, booking) => {
-    try {
-        payloads = payloads.map(payload => {
-            // Remove spaces next to tags
-            payload = payload.replace(/(?<=\{\{)\s*/g, ''); // {{   person.name   }} -> {{person.name   }}
-            payload = payload.replace(/\s*(?=\}\})/g, '');  // {{person.name   }} -> {{person.name}}
-            return payload;
-        });
-
-        const resolvedLiquidItems = await getResolvedLiquidItems(payloads, booking);
-
-        return resolvedLiquidItems;
     } catch (error) {
         error.source = error.source || 'liquid-payload-parser.js -> getLiquidResolvedPayloads';
         throw error;
