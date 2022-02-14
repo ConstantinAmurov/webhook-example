@@ -3,11 +3,11 @@ const { axios } = require('./dependencies');
 const log = require('./utils/logger');
 const { isDuplicateTrigger } = require('./check-trigger');
 const { getConfItem } = require('./utils/config');
-const { getLiquidResolvedPayload, getLiquidResolvedPayloads } = require('./utils/liquid-payload-parser');
+const { getLiquidResolvedPayloads } = require('./utils/liquid-payload-parser');
 const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
 const { updateAxiosOptionsForMtls } = require('./utils/auth/mtls');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
-const { getCompaniesChildrenIds } = require('./utils/jrni');
+const { getCompaniesChildrenIds, getStaffGroupId } = require('./utils/jrni');
 
 const filterConfig = async (event, config, booking) => {
     try {
@@ -23,22 +23,12 @@ const filterConfig = async (event, config, booking) => {
         });
 
         // 2nd phase (additional data required from JRNI)
-        const liquidItemsForAdditionalFiltering = {};
-        config.forEach(configItem => {
-            if (configItem.triggerFor.staffGroups.length > 0)
-                liquidItemsForAdditionalFiltering.personGroupId = '{{person.group_id}}';
-        });
+        const staffGroupIdIsRequired = config.some((configItem) => configItem.triggerFor.staffGroups.length > 0);
 
-        if (Object.keys(liquidItemsForAdditionalFiltering).length === 0)
-            return config;
-
-        const additionalFilters = await getLiquidResolvedPayload(liquidItemsForAdditionalFiltering, booking);
-        config = config.filter(configItem => {
-            if (configItem.triggerFor.staffGroups.length > 0 && !configItem.triggerFor.staffGroups.includes(parseInt(additionalFilters.personGroupId)))
-                return false;
-
-            return true;
-        });
+        if (staffGroupIdIsRequired) {
+            const staffGroupId = await getStaffGroupId(booking);
+            config = config.filter(configItem => configItem.triggerFor.staffGroups.length === 0 || configItem.triggerFor.staffGroups.includes(staffGroupId));
+        }
 
         return config;
     } catch (error) {
@@ -64,8 +54,8 @@ const updateTriggerForCompanies = async (config) => {
 
 const sendData = async (config, booking) => {
     try {
-        let payloads = config.map(configItem => configItem.payload);
-        payloads = await getLiquidResolvedPayloads(payloads, booking);
+        const liquidPayloads = config.map(configItem => configItem.payload);
+        let payloads = await getLiquidResolvedPayloads(liquidPayloads, booking);
         payloads = await getCustomResolvedPayloads(payloads, booking);
 
         const requests = config.map(async (configItem, configItemIndex) => {
