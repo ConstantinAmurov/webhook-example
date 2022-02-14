@@ -183,7 +183,6 @@
                                     "type": "string"
                                 }
                             },
-                            "additionalProperties": false,
                             "required": [
                                 "tempVarUniqueName",
                                 "accessTokenUrl",

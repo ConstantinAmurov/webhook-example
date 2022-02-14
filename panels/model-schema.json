@@ -108,16 +108,7 @@
                             "headerPrefix": {
                                 "type": "string"
                             }
-                        },
-                        "required": [
-                            "username",
-                            "password",
-                            "token",
-                            "tempVarUniqueName",
-                            "accessTokenUrl",
-                            "clientId",
-                            "clientSecret"
-                        ]
+                        }
                     }
                 },
                 "required": [

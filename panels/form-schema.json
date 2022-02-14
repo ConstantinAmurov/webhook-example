@@ -112,43 +112,50 @@
             "key": "configItems[].auth.username",
             "condition": "model.configItems[arrayIndex].auth.method == 'basic_user_pass'",
             "type": "text",
-            "title": "username"
+            "title": "username",
+            "required": true
           },
           {
             "key": "configItems[].auth.password",
             "condition": "model.configItems[arrayIndex].auth.method == 'basic_user_pass'",
             "type": "text",
-            "title": "password"
+            "title": "password",
+            "required": true
           },
           {
             "key": "configItems[].auth.token",
             "condition": "model.configItems[arrayIndex].auth.method == 'basic_token'",
             "type": "text",
-            "title": "token"
+            "title": "token",
+            "required": true
           },
           {
             "key": "configItems[].auth.tempVarUniqueName",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "tempVarUniqueName"
+            "title": "tempVarUniqueName",
+            "required": true
           },
           {
             "key": "configItems[].auth.accessTokenUrl",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "accessTokenUrl"
+            "title": "accessTokenUrl",
+            "required": true
           },
           {
             "key": "configItems[].auth.clientId",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "clientId"
+            "title": "clientId",
+            "required": true
           },
           {
             "key": "configItems[].auth.clientSecret",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "clientSecret"
+            "title": "clientSecret",
+            "required": true
           },
           {
             "key": "configItems[].auth.clientAuthentication",
