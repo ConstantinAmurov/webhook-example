@@ -1,0 +1,124 @@
+{
+    "type": "object",
+    "properties": {
+        "configItems": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "create",
+                                "update",
+                                "cancel"
+                            ]
+                        }
+                    },
+                    "triggerFor": {
+                        "type": "object",
+                        "properties": {
+                            "companies": {
+                                "type": "string"
+                            },
+                            "staffGroups": {
+                                "type": "string"
+                            },
+                            "parentCompanies": {
+                                "type": "string"
+                            },
+                            "excludedCompanies": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "payload": {
+                        "type": "string"
+                    },
+                    "mtls": {
+                        "type": "object",
+                        "properties": {
+                            "keyPath": {
+                                "type": "string"
+                            },
+                            "certPath": {
+                                "type": "string"
+                            },
+                            "caPath": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "auth": {
+                        "type": "object",
+                        "properties": {
+                            "method": {
+                                "type": "string",
+                                "enum": [
+                                    "basic_user_pass",
+                                    "basic_token",
+                                    "oauth2_client_credentials"
+                                ]
+                            },
+                            "username": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            },
+                            "token": {
+                                "type": "string"
+                            },
+                            "tempVarUniqueName": {
+                                "type": "string"
+                            },
+                            "accessTokenUrl": {
+                                "type": "string"
+                            },
+                            "clientId": {
+                                "type": "string"
+                            },
+                            "clientSecret": {
+                                "type": "string"
+                            },
+                            "clientAuthentication": {
+                                "type": "string",
+                                "enum": [
+                                    "send_as_basic_auth_header",
+                                    "send_client_credentials_in_body"
+                                ]
+                            },
+                            "responseProps": {
+                                "type": "object",
+                                "properties": {
+                                    "accessToken": {
+                                        "type": "string"
+                                    },
+                                    "expiresIn": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "headerPrefix": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "url",
+                    "payload"
+                ]
+            }
+        }
+    },
+    "required": [
+        "configItems"
+    ]
+}
