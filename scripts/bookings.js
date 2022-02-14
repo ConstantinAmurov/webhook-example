@@ -57,8 +57,7 @@ const updateTriggerForCompanies = async (config) => {
 const sendData = async (config, booking) => {
     try {
         const liquidPayloads = config.map(configItem => configItem.payload);
-        const tempPayload = ['{% assign total = booking.total %}  {% assign items = total.items %} {% comment %} does not include cancelled bookings {% endcomment %} {% assign printableItems = total.printable_items %} {% comment %} includes cancelled bookings {% endcomment %} {% assign printableItem = total.printable_items[0] %} {% assign space = printableItem.all_spaces.first %} {% assign slot = space.slot %} {% assign resource = slot.resource %} {%- assign companyName = slot.company.name -%} {%- assign memberName = slot.member.name -%} {%- assign addressMulti = slot.address.multiline_print -%}  {%- assign dateTime = space.date_time | date: " % A % e % B % Y % H:% M" -%} {%- assign refNum = space.id -%} {%- assign service = slot.service -%}  { "serviceName": "{{booking.service_name}}" , "guid": "[[guid]]" }'];
-        let payloads = await getLiquidResolvedPayloads(tempPayload, booking);
+        let payloads = await getLiquidResolvedPayloads(liquidPayloads, booking);
         payloads = await getCustomResolvedPayloads(payloads, booking);
 
         const requests = config.map(async (configItem, configItemIndex) => {
