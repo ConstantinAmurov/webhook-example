@@ -24,13 +24,12 @@ const filterConfig = async (event, config, booking) => {
         });
 
         // 2nd phase (additional data required from JRNI)
-        const requireAdditionalFilters = config.some((configItem) => configItem.triggerFor.hasOwnProperty('staffGroups'));
-        if (!requireAdditionalFilters)
-            return config;
+        const staffGroupIdIsRequired = config.some((configItem) => configItem.triggerFor.staffGroups.length > 0);
 
-        const staffGroupId = await getStaffGroupId(booking.company_id, booking.person_id);
-
-        config = config.filter(configItem => configItem.triggerFor.staffGroups.length === 0 || configItem.triggerFor.staffGroups.includes(staffGroupId));
+        if (staffGroupIdIsRequired) {
+            const staffGroupId = await getStaffGroupId(booking);
+            config = config.filter(configItem => configItem.triggerFor.staffGroups.length === 0 || configItem.triggerFor.staffGroups.includes(staffGroupId));
+        }
 
         return config;
     } catch (error) {

@@ -1,8 +1,8 @@
 const bbCore = require('../sdk');
 const { axios } = require('../dependencies');
 
-const getStaffGroupId = async (parentCompanyId, personId) => {
-    const url = `${bbCore.context.apiUrl}/api/${bbCore.context.apiVersion}/admin/${parentCompanyId}/people/${personId}`;
+const getStaffGroupId = async (booking) => {
+    const url = `${bbCore.context.apiUrl}/api/${bbCore.context.apiVersion}/admin/${booking.company_id}/people/${booking.person_id}`;
     const axiosOptions = {
         method: 'get',
         url,
@@ -68,6 +68,6 @@ const getCompanyChildren = async (parentCompanyId) => {
 };
 
 module.exports = {
-    getCompaniesChildrenIds,
-    getStaffGroupId
+    getStaffGroupId,
+    getCompaniesChildrenIds
 };
