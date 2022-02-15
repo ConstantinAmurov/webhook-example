@@ -172,19 +172,22 @@
             "key": "configItems[].auth.responseProps.accessToken",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "responseProps.accessToken"
+            "title": "responseProps.accessToken",
+            "placeholder": "access_token"
           },
           {
             "key": "configItems[].auth.responseProps.expiresIn",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "responseProps.expiresIn"
+            "title": "responseProps.expiresIn",
+            "placeholder": "expires_in"
           },
           {
             "key": "configItems[].auth.headerPrefix",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "headerPrefix"
+            "title": "headerPrefix",
+            "placeholder": "Bearer "
           }
         ]
       }

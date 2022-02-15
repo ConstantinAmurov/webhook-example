@@ -93,7 +93,8 @@
                                 "enum": [
                                     "send_as_basic_auth_header",
                                     "send_client_credentials_in_body"
-                                ]
+                                ],
+                                "default": "send_as_basic_auth_header"
                             },
                             "responseProps": {
                                 "type": "object",
