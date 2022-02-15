@@ -3,7 +3,7 @@
     "key": "configItems",
     "type": "tabarray",
     "tabType": "top",
-    "title": "{{ 'Item ' + $index }}",
+    "title": "{{ 'Item ' + ($index + 1) }}",
     "add": "Add a new config item",
     "items": [
       {
@@ -103,6 +103,7 @@
             "type": "select",
             "title": "Method",
             "titleMap": {
+              "": "",
               "basic_user_pass": "basic_user_pass",
               "basic_token": "basic_token",
               "oauth2_client_credentials": "oauth2_client_credentials"
@@ -171,13 +172,22 @@
             "key": "configItems[].auth.responseProps.accessToken",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "responseProps.accessToken"
+            "title": "responseProps.accessToken",
+            "placeholder": "access_token"
           },
           {
             "key": "configItems[].auth.responseProps.expiresIn",
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
-            "title": "responseProps.expiresIn"
+            "title": "responseProps.expiresIn",
+            "placeholder": "expires_in"
+          },
+          {
+            "key": "configItems[].auth.headerPrefix",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "headerPrefix",
+            "placeholder": "Bearer "
           }
         ]
       }
