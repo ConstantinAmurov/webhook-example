@@ -178,6 +178,12 @@
             "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
             "type": "text",
             "title": "responseProps.expiresIn"
+          },
+          {
+            "key": "configItems[].auth.headerPrefix",
+            "condition": "model.configItems[arrayIndex].auth.method == 'oauth2_client_credentials'",
+            "type": "text",
+            "title": "headerPrefix"
           }
         ]
       }
