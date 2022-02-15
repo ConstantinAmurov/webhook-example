@@ -1,6 +1,24 @@
 const bbCore = require('../sdk');
 const { axios } = require('../dependencies');
 
+const getStaffGroupId = async (booking) => {
+    const url = `${bbCore.context.apiUrl}/api/${bbCore.context.apiVersion}/admin/${booking.company_id}/people/${booking.person_id}`;
+    const axiosOptions = {
+        method: 'get',
+        url,
+        headers: {
+            'Accept': 'application/json',
+            'App-Id': bbCore.sessionStorage.app_id,
+            'App-Key': bbCore.sessionStorage.app_key,
+            'Auth-Token': bbCore.sessionStorage.auth_token
+        }
+    };
+
+    const { data } = await axios(axiosOptions);
+
+    return data.group_id;
+};
+
 const getCompaniesChildrenIds = async (parentCompanyIds) => {
     try {
         const requests = parentCompanyIds.map((parentCompanyId) => getCompanyChildren(parentCompanyId));
@@ -49,4 +67,7 @@ const getCompanyChildren = async (parentCompanyId) => {
     }
 };
 
-module.exports = { getCompaniesChildrenIds };
+module.exports = {
+    getStaffGroupId,
+    getCompaniesChildrenIds
+};
