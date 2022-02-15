@@ -3,7 +3,7 @@
     "key": "configItems",
     "type": "tabarray",
     "tabType": "top",
-    "title": "{{ 'Item ' + $index }}",
+    "title": "{{ 'Item ' + ($index + 1) }}",
     "add": "Add a new config item",
     "items": [
       {
