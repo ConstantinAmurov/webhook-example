@@ -56,7 +56,7 @@ class JrniDataWebhookController {
 
     async saveConfig(form) {
         this.$scope.$broadcast('schemaFormValidate');
-console.log(this.model);
+
         if (form.$valid) {
             const app = await this.company.$get('apps', { app_name: 'jrni-data-webhook' });
             const { data } = await app.$post('admin_script', { name: 'save-webhook-config' }, { config: this.model.configItems });
