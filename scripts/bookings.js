@@ -13,7 +13,7 @@ const filterConfig = async (event, config, booking) => {
     try {
         // 1st phase (no additional data required from JRNI)
         config = config.filter(configItem => {
-            if (configItem.events.length > 0 && !configItem.events.includes(event))
+            if (configItem.events.length === 0 || !configItem.events.includes(event))
                 return false;
 
             if (configItem.triggerFor.companies.length > 0 && !configItem.triggerFor.companies.includes(booking.company_id))
