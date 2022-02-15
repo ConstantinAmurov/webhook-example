@@ -103,6 +103,7 @@
             "type": "select",
             "title": "Method",
             "titleMap": {
+              "": "",
               "basic_user_pass": "basic_user_pass",
               "basic_token": "basic_token",
               "oauth2_client_credentials": "oauth2_client_credentials"

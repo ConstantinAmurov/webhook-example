@@ -61,6 +61,7 @@
                             "method": {
                                 "type": "string",
                                 "enum": [
+                                    "",
                                     "basic_user_pass",
                                     "basic_token",
                                     "oauth2_client_credentials"
