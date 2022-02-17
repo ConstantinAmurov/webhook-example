@@ -8,6 +8,7 @@ const { getCustomResolvedPayloads } = require('./utils/custom-payload-parser');
 const { updateAxiosOptionsForMtls } = require('./utils/auth/mtls');
 const { updateAxiosOptionsForAuth } = require('./utils/auth/auth');
 const { getCompaniesChildrenIds, getStaffGroupId } = require('./utils/jrni');
+const { sendToRaygunExtApp } = require('./utils/send-to-raygun/send-to-raygun-ext-app');
 
 const filterConfig = async (event, config, booking) => {
     try {
@@ -102,6 +103,7 @@ const afterCreateBooking = async (data, callback) => {
     catch (error) {
         error.source = error.source || 'booking.js -> afterCreateBooking';
         log('error', `[${error.source}]`, error, true);
+        sendToRaygunExtApp(error);
         callback(new Error(`The afterCreateBooking handler failed. Error: ${error.message}.`));
     }
 };
@@ -138,6 +140,7 @@ const afterUpdateBooking = async (data, callback) => {
     } catch (error) {
         error.source = error.source || 'booking.js -> afterUpdateBooking';
         log('error', `[${error.source}]`, error, true);
+        sendToRaygunExtApp(error);
         callback(new Error(`The afterUpdateBooking handler failed. Error: ${error.message}.`));
     }
 };
@@ -160,6 +163,7 @@ const afterDeleteBooking = async (data, callback) => {
     catch (error) {
         error.source = error.source || 'booking.js -> afterDeleteBooking';
         log('error', `[${error.source}]`, error, true);
+        sendToRaygunExtApp(error);
         callback(new Error(`The afterDeleteBooking handler failed. Error: ${error.message}.`));
     }
 };

@@ -1,7 +1,8 @@
 const bbCore = require('../sdk');
 
 const CONFIG_PROPERTIES = [
-    'configJson'
+    'configJson',
+    'raygunApiKey'
 ];
 
 const getConfItem = name => {

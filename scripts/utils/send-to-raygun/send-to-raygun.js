@@ -1,4 +1,4 @@
-const raygun = require('raygun');
+const { raygun } = require('../../dependencies');
 const crypto = require('crypto');
 
 /**

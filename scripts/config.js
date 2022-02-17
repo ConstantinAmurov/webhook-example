@@ -3,6 +3,7 @@ const { jsonSchemaValidate } = require('./dependencies');
 const { getConfItem, setConfItem } = require('./utils/config');
 const log = require('./utils/logger');
 const configSchema = require('./config-schema');
+const { sendToRaygunExtApp } = require('./utils/send-to-raygun/send-to-raygun-ext-app');
 
 const setWebHookConfigDefaultValues = (config) => {
     config.forEach((item) => {
@@ -54,6 +55,7 @@ const getWebhookConfig = (data, callback) => {
     } catch (error) {
         error.source = error.source || 'config.js -> getWebhookConfig';
         log('error', `[${error.source}]`, error, true);
+        sendToRaygunExtApp(error);
         callback(new Error(`Failed to retrieve app config. Error: ${error.message}.`));
     }
 };
@@ -69,6 +71,7 @@ const saveWebhookConfig = (data, callback) => {
     } catch (error) {
         error.source = error.source || 'config.js -> saveWebhookConfig';
         log('error', `[${error.source}]`, error, true);
+        sendToRaygunExtApp(error);
         callback(new Error(`Failed to save app config. Error: ${error.message}.`));
     }
 };

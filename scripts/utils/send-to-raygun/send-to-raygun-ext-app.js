@@ -22,7 +22,7 @@ const sendToRaygunExtApp = error => {
         apiKey,
         error,
         env,
-        groupingKeyBase: `${env}${error.message}`,
+        groupingKeyBase: `${env}${error.source || ''}${error.message}`,
         failureCallback: (err) => {
             err.source = err.source || 'send-to-raygun-ext-app.js -> sendToRaygunExtApp';
             log('error', `[${err.source}]`, err, true);
