@@ -68,7 +68,21 @@
             "key": "configItems[].payload",
             "type": "textarea",
             "title": "Liquid payload",
-            "description": "More details <a href='https://bookingbug.atlassian.net/wiki/spaces/CS/pages/364740627/Configuring+Liquid+Objects+in+JRNI'>here</a>."
+            "description": "More details <a href='https://bookingbug.atlassian.net/wiki/spaces/CS/pages/364740627/Configuring+Liquid+Objects+in+JRNI'>here</a>.",
+            "condition": "model.configItems[arrayIndex].readOnly === false",
+            "readonly": true
+          },
+          {
+            "key": "configItems[].payload",
+            "type": "textarea",
+            "title": "Liquid payload",
+            "description": "More details <a href='https://bookingbug.atlassian.net/wiki/spaces/CS/pages/364740627/Configuring+Liquid+Objects+in+JRNI'>here</a>.",
+            "condition": "model.configItems[arrayIndex].readOnly === true"
+          },
+          {
+            "key": "configItems[].readOnly",
+            "title": "Allow updating the 'Liquid payload' field.",
+            "description": "Please ensure you are allowed to do this modification."
           }
         ]
       },
