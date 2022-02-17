@@ -16,6 +16,7 @@ const crypto = require('crypto');
 
 const sendToRaygun = options => {
     let { apiKey, error, env, customData, groupingKeyBase, failureCallback } = options;
+    const errorMessage = error.message;
 
     if (!apiKey || !error)
         return;
@@ -38,6 +39,8 @@ const sendToRaygun = options => {
         customData = customData || {};
 
         raygunClient.send(error, customData);
+
+        error.message = errorMessage;
     } catch (err) {
         if (failureCallback)
             failureCallback(err);
