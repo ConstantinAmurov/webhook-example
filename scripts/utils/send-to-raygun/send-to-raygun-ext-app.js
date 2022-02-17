@@ -1,5 +1,7 @@
-const bbCore = require('../sdk');
+const bbCore = require('../../sdk');
 
+const { getConfItem } = require('../config');
+const log = require('../logger');
 const sendToRaygun = require('./send-to-raygun');
 
 const getSubdomain = () => {
@@ -13,7 +15,7 @@ const getSubdomain = () => {
 };
 
 const sendToRaygunExtApp = error => {
-    const apiKey = bbCore.getConfigValue('raygunApiKey');
+    const apiKey = getConfItem('raygunApiKey');
     const env = getSubdomain();
 
     sendToRaygun({
@@ -22,7 +24,8 @@ const sendToRaygunExtApp = error => {
         env,
         groupingKeyBase: `${env}${error.message}`,
         failureCallback: (err) => {
-            console.error('sendToRaygunExtApp failed', err);
+            err.source = err.source || 'send-to-raygun-ext-app.js -> sendToRaygunExtApp';
+            log('error', `[${err.source}]`, err, true);
         },
     });
 };
