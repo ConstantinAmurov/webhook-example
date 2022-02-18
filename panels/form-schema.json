@@ -55,7 +55,7 @@
           },
           {
             "type": "help",
-            "helpvalue": "<div class='help-block'>The payload will be sent for all companies/staff groups if nothing is specified in Companies / Parent companies / Staff groups fields.</div>"
+            "helpvalue": "<div class='help-block'>The payload will be sent for all companies/staff groups if nothing is specified in <strong>Companies / Parent companies / Staff groups</strong> fields.</div>"
           }
         ]
       },
