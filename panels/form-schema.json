@@ -81,6 +81,7 @@
           },
           {
             "key": "configItems[].readOnlyLiquidPayload",
+            "type": "checkbox",
             "title": "Allow updating the 'Liquid payload' field.",
             "description": "Please ensure this client uses custom Liquid Payload."
           }
