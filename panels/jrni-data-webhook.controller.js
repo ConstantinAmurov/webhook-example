@@ -3,6 +3,7 @@ import Configurator from 'bookingbug-configurator-js';
 import template from './jrni-data-webhook.html';
 import modelSchema from './model-schema.json';
 import formSchema from './form-schema.json';
+import defaultLiquidPayload from "./defaultLiquidPayload";
 
 Configurator.addPage('CustomPages', 'jrni-data-webhook', {
     style: 'tab',
@@ -25,6 +26,7 @@ class JrniDataWebhookController {
         this.$scope = $scope;
 
         this.schema = modelSchema;
+        this.schema.properties.configItems.items.properties.payload.default = defaultLiquidPayload;
         this.form = formSchema;
 
         this.initialise();

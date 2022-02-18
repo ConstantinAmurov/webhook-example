@@ -41,6 +41,9 @@
                     "payload": {
                         "type": "string"
                     },
+                    "readOnlyLiquidPayload": {
+                        "type": "boolean"
+                    },
                     "mtls": {
                         "type": "object",
                         "properties": {
