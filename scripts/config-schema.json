@@ -54,7 +54,7 @@
             "payload": {
                 "type": "string"
             },
-            "readOnly": {
+            "readOnlyLiquidPayload": {
                 "type": "boolean"
             },
             "mtls": {

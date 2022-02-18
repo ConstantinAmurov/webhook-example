@@ -69,7 +69,7 @@
             "type": "textarea",
             "title": "Liquid payload",
             "description": "More details <a href='https://bookingbug.atlassian.net/wiki/spaces/CS/pages/364740627/Configuring+Liquid+Objects+in+JRNI'>here</a>.",
-            "condition": "model.configItems[arrayIndex].readOnly === false",
+            "condition": "model.configItems[arrayIndex].readOnlyLiquidPayload === false",
             "readonly": true
           },
           {
@@ -77,10 +77,10 @@
             "type": "textarea",
             "title": "Liquid payload",
             "description": "More details <a href='https://bookingbug.atlassian.net/wiki/spaces/CS/pages/364740627/Configuring+Liquid+Objects+in+JRNI'>here</a>.",
-            "condition": "model.configItems[arrayIndex].readOnly === true"
+            "condition": "model.configItems[arrayIndex].readOnlyLiquidPayload === true"
           },
           {
-            "key": "configItems[].readOnly",
+            "key": "configItems[].readOnlyLiquidPayload",
             "title": "Allow updating the 'Liquid payload' field.",
             "description": "Please ensure this client uses custom Liquid Payload."
           }
