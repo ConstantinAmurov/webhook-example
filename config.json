@@ -4,9 +4,15 @@
             "title": "JSON object with webhook config",
             "description": "The config of the app in JSON format (leave it empty for now, it will be updated from Studio)",
             "type": "string"
+        },
+        "raygunApiKey": {
+            "title": "API Key for 'JRNI Data Webhook' Raygun application",
+            "description": "Add the API Key for 'JRNI Data Webhook' Raygun application",
+            "type": "string"
         }
     },
     "required": [
-        "configJson"
+        "configJson",
+        "raygunApiKey"
     ]
 }

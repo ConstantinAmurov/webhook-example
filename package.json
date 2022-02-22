@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
-    "jsonschema": "^1.4.0"
+    "jsonschema": "^1.4.0",
+    "raygun": "^0.13.1"
   }
 }

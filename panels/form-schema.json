@@ -52,6 +52,10 @@
             "type": "text",
             "title": "Excluded companies",
             "description": "Comma-separated list of IDs."
+          },
+          {
+            "type": "help",
+            "helpvalue": "<div class='help-block'>The payload will be sent for all companies/staff groups if nothing is specified in <strong>Companies / Parent companies / Staff groups</strong> fields.</div>"
           }
         ]
       },
@@ -84,28 +88,6 @@
             "type": "checkbox",
             "title": "Allow updating the 'Liquid payload' field.",
             "description": "Please ensure this client uses custom Liquid Payload."
-          }
-        ]
-      },
-      {
-        "type": "fieldset",
-        "title": "mTLS",
-        "items": [
-          {
-            "key": "configItems[].mtls.keyPath",
-            "type": "text",
-            "title": "key path"
-          },
-          {
-            "key": "configItems[].mtls.certPath",
-            "type": "text",
-            "title": "cert path"
-          },
-          {
-            "key": "configItems[].mtls.caPath",
-            "type": "text",
-            "title": "ca path",
-            "description": "The paths are relative to <code>scripts/certs</code> folder."
           }
         ]
       },
@@ -203,6 +185,28 @@
             "type": "text",
             "title": "headerPrefix",
             "placeholder": "Bearer "
+          }
+        ]
+      },
+      {
+        "type": "fieldset",
+        "title": "mTLS",
+        "items": [
+          {
+            "key": "configItems[].mtls.keyPath",
+            "type": "text",
+            "title": "key path"
+          },
+          {
+            "key": "configItems[].mtls.certPath",
+            "type": "text",
+            "title": "cert path"
+          },
+          {
+            "key": "configItems[].mtls.caPath",
+            "type": "text",
+            "title": "ca path",
+            "description": "The paths are relative to <code>scripts/certs</code> folder."
           }
         ]
       }

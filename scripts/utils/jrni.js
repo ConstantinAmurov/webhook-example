@@ -2,21 +2,27 @@ const bbCore = require('../sdk');
 const { axios } = require('../dependencies');
 
 const getStaffGroupId = async (booking) => {
-    const url = `${bbCore.context.apiUrl}/api/${bbCore.context.apiVersion}/admin/${booking.company_id}/people/${booking.person_id}`;
-    const axiosOptions = {
-        method: 'get',
-        url,
-        headers: {
-            'Accept': 'application/json',
-            'App-Id': bbCore.sessionStorage.app_id,
-            'App-Key': bbCore.sessionStorage.app_key,
-            'Auth-Token': bbCore.sessionStorage.auth_token
-        }
-    };
+    try {
+        const url = `${bbCore.context.apiUrl}/api/${bbCore.context.apiVersion}/admin/${booking.company_id}/people/${booking.person_id}`;
+        const axiosOptions = {
+            method: 'get',
+            url,
+            headers: {
+                'Accept': 'application/json',
+                'App-Id': bbCore.sessionStorage.app_id,
+                'App-Key': bbCore.sessionStorage.app_key,
+                'Auth-Token': bbCore.sessionStorage.auth_token
+            }
+        };
 
-    const { data } = await axios(axiosOptions);
+        const { data } = await axios(axiosOptions);
 
-    return data.group_id;
+        return data.group_id;
+    }
+    catch (error) {
+        error.source = error.source || 'jrni.js -> getStaffGroupId';
+        throw error;
+    }
 };
 
 const getCompaniesChildrenIds = async (parentCompanyIds) => {
